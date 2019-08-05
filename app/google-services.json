@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "271526658494",
+    "firebase_url": "https://civic-kayak-240607.firebaseio.com",
+    "project_id": "civic-kayak-240607",
+    "storage_bucket": "civic-kayak-240607.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:271526658494:android:960c18b124e32427",
+        "android_client_info": {
+          "package_name": "com.example.o_detect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "271526658494-mk8dai9vt9u6d4snito4pitlhov1k0vo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.o_detect",
+            "certificate_hash": "c77ceb07051af491cae7ceb71c9bd21886d488ea"
+          }
+        },
+        {
+          "client_id": "271526658494-c675jdciicpobncb3n88lvmp3amsh8fh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.o_detect",
+            "certificate_hash": "e0d819944586c7ed8de878fe7179307bf0f929e7"
+          }
+        },
+        {
+          "client_id": "271526658494-kp53p0trec4i9g8akh8kfcnaao65cv5n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAf6Qw557e_-TZxP3R_KqZ-voLWY7W_9g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "271526658494-kp53p0trec4i9g8akh8kfcnaao65cv5n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
