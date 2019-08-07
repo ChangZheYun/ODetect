@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/titleSignIn"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/signInUsernameBlock"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+        <ImageView
+                android:id="@+id/signInUsernameLogo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/signInUsername"
+                app:layout_constraintBottom_toBottomOf="@+id/signInUsernameBlock"
+                android:layout_marginStart="50dp"/>
+
+        <EditText
+                android:id="@+id/signInUsername"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_email"
+                android:inputType="textEmailAddress"
+                android:imeOptions="actionNext"
+                android:selectAllOnFocus="true"
+                android:textColor="@color/colorSign"
+                android:textColorHint="@color/colorHint"
+                app:layout_constraintStart_toEndOf="@id/signInUsernameLogo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/signInUsernameBlock"
+                android:layout_marginEnd="25dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/signInPasswordBlock"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/signInUsernameBlock">
+
+            <ImageView
+                    android:id="@+id/signInPasswordLogo"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/signInPassword"
+                    app:layout_constraintBottom_toBottomOf="@+id/signInPasswordBlock"
+                    android:layout_marginStart="50dp"/>
+
+            <EditText
+                    android:id="@+id/signInPassword"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_password"
+                    android:imeActionLabel="@string/action_sign_in_short"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:selectAllOnFocus="true"
+                    android:textColor="@color/colorSign"
+                    android:textColorHint="@color/colorHint"
+                    app:layout_constraintStart_toEndOf="@id/signInPasswordLogo"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/signInPasswordBlock"
+                    android:layout_marginEnd="25dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

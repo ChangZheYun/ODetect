@@ -16,26 +16,38 @@ import android.animation.AnimatorSet
 import android.view.animation.TranslateAnimation
 import android.view.animation.Animation
 import android.widget.*
-import android.widget.Toast
 import android.R.attr.name
-import com.example.o_detect.TitleGridView
+import android.util.DisplayMetrics
+import android.util.Log
+import android.view.Gravity.*
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
+    private lateinit var viewPager : ViewPager
+    private lateinit var tabLayout : TabLayout
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val img = findViewById<ImageView>(R.id.loginLogo)
-        val username = findViewById<EditText>(R.id.username)
-        val password = findViewById<EditText>(R.id.password)
-        val login = findViewById<Button>(R.id.loginButton)
-        val loading = findViewById<ProgressBar>(R.id.loading)
-        val titleGridView=findViewById<GridView>(R.id.titleGridView)
+        val img = findViewById<View>(R.id.headerLayout)
+
+        viewPager = findViewById(R.id.signPager)
+        tabLayout = findViewById(R.id.signTabs)
+
+        //val titleGridView=findViewById<GridView>(R.id.titleGridView)
+
 
         //動畫路徑設定(x1,x2,y1,y2)
         val am = TranslateAnimation(0f, 0f, 500f, 0f)
@@ -51,16 +63,32 @@ class LoginActivity : AppCompatActivity() {
         am.startNow()
 
 
+        /*
         //Get an instance
-        val adpater = TitleGridView()
+        val adapter = TitleGridView()
 
         //Set titleGridView attribute
-        titleGridView.adapter = adpater
-        titleGridView.numColumns = 2
+        titleGridView.adapter = adapter
         titleGridView.horizontalSpacing = 15
         titleGridView.stretchMode = GridView.STRETCH_COLUMN_WIDTH //分配剩餘空間給titleText
 
 
+        titleGridView.setOnItemClickListener{ _ , view , position , _ ->
+            Toast.makeText(this,"Click ${signText[position]}",Toast.LENGTH_SHORT).show()
+        }*/
+
+        viewPager.bringToFront()
+        tabLayout.bringToFront()
+        tabLayout.addTab(tabLayout.newTab().setText("Sign Up"))
+        tabLayout.addTab(tabLayout.newTab().setText("Sign In"))
+        setViewPagerAndTabLayout()
+        viewPager.currentItem = 1  //預設sign in
+
+
+        val username : EditText? = findViewById<EditText>(R.id.signInUsername)
+        val password : EditText? = findViewById<EditText>(R.id.signInPassword)
+        val login = findViewById<Button>(R.id.signInButton)
+        val loading = findViewById<ProgressBar>(R.id.loading)
 
         loginViewModel = ViewModelProviders.of(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
@@ -72,10 +100,10 @@ class LoginActivity : AppCompatActivity() {
             login.isEnabled = loginState.isDataValid
 
             if (loginState.usernameError != null) {
-                username.error = getString(loginState.usernameError)
+                username?.error = getString(loginState.usernameError)
             }
             if (loginState.passwordError != null) {
-                password.error = getString(loginState.passwordError)
+                password?.error = getString(loginState.passwordError)
             }
         })
 
@@ -95,27 +123,27 @@ class LoginActivity : AppCompatActivity() {
             finish()
         })
 
-        username.afterTextChanged {
+        username?.afterTextChanged {
             loginViewModel.loginDataChanged(
-                username.text.toString(),
-                password.text.toString()
+                username?.text.toString(),
+                password?.text.toString()
             )
         }
 
-        password.apply {
+        password?.apply {
             afterTextChanged {
                 loginViewModel.loginDataChanged(
-                    username.text.toString(),
-                    password.text.toString()
+                    username?.text.toString(),
+                    password?.text.toString()
                 )
             }
 
-            EditText.setOnEditorActionListener { _, actionId, _ ->
+            setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
                         loginViewModel.login(
-                            username.text.toString(),
-                            password.text.toString()
+                            username?.text.toString(),
+                            password?.text.toString()
                         )
                 }
                 false
@@ -123,7 +151,7 @@ class LoginActivity : AppCompatActivity() {
 
             login.setOnClickListener {
                 loading.visibility = View.VISIBLE
-                loginViewModel.login(username.text.toString(), password.text.toString())
+                loginViewModel.login(username?.text.toString(), password?.text.toString())
             }
         }
     }
@@ -143,7 +171,48 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
     }
 
+
+    // Fragment Adapter (這裡可能要改)
+    class SignAdapter : PagerAdapter() {
+
+        override fun getCount(): Int {
+            return 2
+        }
+
+        override fun isViewFromObject(view: View, `object`: Any): Boolean {
+            return `object`== view
+        }
+
+        override fun getPageTitle(position: Int): CharSequence? {
+            return when(position){
+                0 -> "Sign Up"
+                else -> "Sign In"
+            }
+        }
+
+        override fun instantiateItem(container: ViewGroup, position: Int): Any {
+            val view : Any
+            when(position){
+                0 -> view = LayoutInflater.from(container.context).inflate(R.layout.title_signup,container,false)
+                else -> view = LayoutInflater.from(container.context).inflate(R.layout.title_signin,container,false)
+            }
+            container.addView(view)
+            return view
+        }
+
+    }
+
+    private fun setViewPagerAndTabLayout(){
+        val fragmentAdapter = SignAdapter()
+
+        viewPager.adapter = fragmentAdapter
+        //viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
+        //tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(viewPager))
+        tabLayout.setupWithViewPager(viewPager)
+    }
+
 }
+
 
 /**
  * Extension function to simplify setting an afterTextChanged action to EditText components.

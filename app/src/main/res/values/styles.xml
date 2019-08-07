@@ -27,8 +27,9 @@
         <item name="android:textColor">@color/colorText</item>
     </style>
 
-    <style name="titleSignUp">
-        <item name="android:textSize">25dp</item>
-        <item name="android:textColor">@color/colorSignUp</item>
+    <style name="tabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
+        <item name="android:textSize">25sp</item>
+        <item name="android:textAllCaps">false</item>
     </style>
+
 </resources>
