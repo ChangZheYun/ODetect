@@ -1,15 +1,22 @@
 package com.example.o_detect
 
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import android.widget.CheckBox
+import android.widget.TextView
+
+
 
 
 class TitleGridView : BaseAdapter(){
 
-    //Title GridView
+    private lateinit var titleView : View
+
+    //Title GridView (此處以後可用傳遞constructor修改)
     private val signText = arrayOf("Sign Up","Sign In")
 
     override fun getView(position:Int, convertView: View?, parent: ViewGroup?): View {
@@ -17,20 +24,18 @@ class TitleGridView : BaseAdapter(){
         //Inflate (將layout:title_login找出)
         val inflater = parent?.context?.
             getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = inflater.inflate(R.layout.title_login,null)
+        if(convertView == null) {
 
-        //Get GridView and TextView
-        val titleGridView = view.findViewById<GridView>(R.id.titleGridView)
-        val titleText = view.findViewById<TextView>(R.id.titleGridText)
+            titleView = inflater.inflate(R.layout.title_login,null)
 
-        //Push data to titleText
-        titleText.text = signText[position]
+            //Get GridView and TextView
+            //val titleGridView = titleView.findViewById<GridView>(R.id.titleGridView)
+            val titleText = titleView.findViewById<TextView>(R.id.titleGridText)
 
-        titleGridView.setOnClickListener{
-            Toast.makeText(parent.context,
-                "Clicked : ${signText[position]}",Toast.LENGTH_SHORT).show()
+            //Push data to titleText
+            titleText.text = signText[position]
         }
-        return view
+        return titleView
     }
 
     override fun getItem(p0: Int): Any {
