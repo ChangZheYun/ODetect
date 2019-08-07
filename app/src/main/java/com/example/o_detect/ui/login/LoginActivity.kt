@@ -18,19 +18,13 @@ import android.view.animation.Animation
 import android.widget.*
 import android.widget.Toast
 import android.R.attr.name
-import android.widget.AdapterView
-
-
-
-
+import com.example.o_detect.TitleGridView
 
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
 
-    //Title GridView
-    private val imgText = arrayOf("Sign Up","Sign In")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
         val password = findViewById<EditText>(R.id.password)
         val login = findViewById<Button>(R.id.loginButton)
         val loading = findViewById<ProgressBar>(R.id.loading)
-
+        val titleGridView=findViewById<GridView>(R.id.titleGridView)
 
         //動畫路徑設定(x1,x2,y1,y2)
         val am = TranslateAnimation(0f, 0f, 500f, 0f)
@@ -57,19 +51,14 @@ class LoginActivity : AppCompatActivity() {
         am.startNow()
 
 
-        //----------GridView----------
-       /* val titleGV = findViewById<GridView>(R.id.titleGridView)
-        //陣列接收器
-        val titleArray = ArrayAdapter(this,R.layout.activity_login,imgText)
-        titleGV.setNumColumns(2)
-        titleGV.setAdapter(titleArray)
+        //Get an instance
+        val adpater = TitleGridView()
 
-        titleGV.setOnClickListener(View.OnClickListener(){
-            @Override
-            fun onClick(v:View){
-                titleGV.setVisibility(View.VISIBLE)
-            }
-        })*/
+        //Set titleGridView attribute
+        titleGridView.adapter = adpater
+        titleGridView.numColumns = 2
+        titleGridView.horizontalSpacing = 15
+        titleGridView.stretchMode = GridView.STRETCH_COLUMN_WIDTH //分配剩餘空間給titleText
 
 
 
@@ -121,7 +110,7 @@ class LoginActivity : AppCompatActivity() {
                 )
             }
 
-            setOnEditorActionListener { _, actionId, _ ->
+            EditText.setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
                         loginViewModel.login(
@@ -153,8 +142,8 @@ class LoginActivity : AppCompatActivity() {
     private fun showLoginFailed(@StringRes errorString: Int) {
         Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
     }
-}
 
+}
 
 /**
  * Extension function to simplify setting an afterTextChanged action to EditText components.
