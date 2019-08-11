@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Button
 
 
 class SignUpFragment:Fragment() {

@@ -17,17 +17,26 @@ import android.view.animation.TranslateAnimation
 import android.view.animation.Animation
 import android.widget.*
 import android.R.attr.name
+import android.app.PendingIntent.getActivity
+import android.content.Context
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Gravity.*
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.example.o_detect.SignInFragment
+import com.example.o_detect.SignUpFragment
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.auth.FirebaseAuth
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlinx.android.synthetic.main.title_signin.view.*
 
 
 class LoginActivity : AppCompatActivity() {
@@ -35,20 +44,81 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var viewPager : ViewPager
     private lateinit var tabLayout : TabLayout
+    private val TAG = "LoginActivity"
+    private lateinit var auth: FirebaseAuth
 
+    // Fragment Pager
+    class SignAdapter constructor(fm:FragmentManager): FragmentPagerAdapter(fm) {
+
+        private var fragmentList : MutableList<Fragment> = ArrayList()
+      //  private var currentViewPager : View? =null
+
+        init{
+            fragmentList.add(SignUpFragment())
+            fragmentList.add(SignInFragment())
+        }
+
+        override fun getCount(): Int {
+            return 2
+        }
+
+        override fun getItem(position: Int): Fragment {
+            return fragmentList[position]
+        }
+
+        override fun getPageTitle(position: Int): CharSequence? {
+            return when(position){
+                0 -> "Sign Up"
+                else -> "Sign In"
+            }
+        }
+
+     /*   override fun setPrimaryItem(container: ViewGroup, position: Int, `object`: Any) {
+            currentViewPager = `object` as View
+        }
+
+        fun getPrimaryItem() : View{
+            return currentViewPager!!
+        }
+*/
+        /*override fun isViewFromObject(view: View, `object`: Any): Boolean {
+              return `object`== view
+        }*/
+
+       /* override fun instantiateItem(container: ViewGroup, position: Int): Any {
+              val view : Any
+              when(position){
+                  0 -> view = LayoutInflater.from(container.context).inflate(R.layout.title_signup,container,false)
+                  else -> view = LayoutInflater.from(container.context).inflate(R.layout.title_signin,container,false)
+              }
+              container.addView(view)
+              return view
+        }*/
+
+    }
+
+    private fun setViewPagerAndTabLayout(){
+        val fragmentAdapter = SignAdapter(supportFragmentManager)
+
+        viewPager.adapter = fragmentAdapter
+        //viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
+        //tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(viewPager))
+        tabLayout.setupWithViewPager(viewPager)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val img = findViewById<View>(R.id.headerLayout)
+
+       // val img = findViewById<View>(R.id.headerLayout)
 
         viewPager = findViewById(R.id.signPager)
         tabLayout = findViewById(R.id.signTabs)
 
         //val titleGridView=findViewById<GridView>(R.id.titleGridView)
 
-
+/*
         //動畫路徑設定(x1,x2,y1,y2)
         val am = TranslateAnimation(0f, 0f, 500f, 0f)
         //動畫開始到結束的時間，2秒
@@ -60,22 +130,8 @@ class LoginActivity : AppCompatActivity() {
         //將動畫寫入ImageView
         img.setAnimation(am)
         //開始動畫
-        am.startNow()
+        am.startNow()*/
 
-
-        /*
-        //Get an instance
-        val adapter = TitleGridView()
-
-        //Set titleGridView attribute
-        titleGridView.adapter = adapter
-        titleGridView.horizontalSpacing = 15
-        titleGridView.stretchMode = GridView.STRETCH_COLUMN_WIDTH //分配剩餘空間給titleText
-
-
-        titleGridView.setOnItemClickListener{ _ , view , position , _ ->
-            Toast.makeText(this,"Click ${signText[position]}",Toast.LENGTH_SHORT).show()
-        }*/
 
         viewPager.bringToFront()
         tabLayout.bringToFront()
@@ -85,25 +141,96 @@ class LoginActivity : AppCompatActivity() {
         viewPager.currentItem = 1  //預設sign in
 
 
-        val username : EditText? = findViewById<EditText>(R.id.signInUsername)
-        val password : EditText? = findViewById<EditText>(R.id.signInPassword)
-        val login = findViewById<Button>(R.id.signInButton)
-        val loading = findViewById<ProgressBar>(R.id.loading)
+      /*  val signInLayout: View = LayoutInflater.from(this).inflate(R.layout.title_signin,null)
+        val inButton = signInLayout.findViewById<Button>(R.id.signInButton)
+        inButton.setOnClickListener {
+            Log.d(TAG,"ONCLICK")
+        }*/
 
-        loginViewModel = ViewModelProviders.of(this, LoginViewModelFactory())
+      /*  auth = FirebaseAuth.getInstance()
+        auth.signInWithEmailAndPassword("hudielan2019@gmail.com","cj62u,6x06")
+            .addOnCompleteListener(this){ task ->
+                if(task.isSuccessful){
+                    Log.d(TAG,"signInWithEmail:Success")
+                    //val user = auth.currentUser
+                } else{
+                    Log.w(TAG,"signInWithEmail:failure",task.exception)
+                }
+            }*/
+
+        /* viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+            }
+
+            override fun onPageSelected(position: Int) {
+                if(position==1){
+                    val signInLayout: View = LayoutInflater.from(applicationContext).inflate(R.layout.title_signin,null)
+                    val inButton = findViewById<Button>(R.id.signInButton)
+                    inButton.setOnClickListener {
+                        Log.d(TAG,"ONCLICK")
+                     //   Toast.makeText(applicationContext,"GAGAGAGA",Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        })*/
+
+       /* val ttt: View = LayoutInflater.from(this).inflate(R.layout.title_signin,null)
+        val inButton = ttt.findViewById<Button>(R.id.signInButton)
+        inButton.setOnClickListener {
+            Log.d(TAG,"ONCLICK")
+        }*/
+
+        //  val username = signInLayout.findViewById<EditText>(R.id.signInUsername)
+        // val signUpLayout = inflater.inflate(R.layout.title_signup,null)
+
+
+       /* tabLayout.addOnTabSelectedListener( object: TabLayout.OnTabSelectedListener{
+            override fun onTabSelected(tabLayout: TabLayout.Tab){
+                when(tabLayout.position){
+                    0 -> login.text = "註冊"
+                    else -> login.text = "登入"
+                }
+            }
+
+            override fun onTabReselected(p0: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabUnselected(p0: TabLayout.Tab?) {
+
+            }
+        })*/
+
+        /*val username = signInLayout.findViewById<EditText>(R.id.signInUsername)
+        val password = signInLayout.findViewById<EditText>(R.id.signInPassword)
+        val loading = findViewById<ProgressBar>(R.id.loading)*/
+
+
+
+       /*  signInButton.setOnClickListener {
+            Toast.makeText(this,"BUTTON TEST",Toast.LENGTH_SHORT).show()
+           // loginViewModel.login(username.text.toString(), password.text.toString())
+        }*/
+
+      /*  loginViewModel = ViewModelProviders.of(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
 
         loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
 
             // disable login button unless both username / password is valid
-            login.isEnabled = loginState.isDataValid
+            signInButton.isEnabled = loginState.isDataValid
 
             if (loginState.usernameError != null) {
-                username?.error = getString(loginState.usernameError)
+                username.error = getString(loginState.usernameError)
             }
             if (loginState.passwordError != null) {
-                password?.error = getString(loginState.passwordError)
+                password.error = getString(loginState.passwordError)
             }
         })
 
@@ -123,18 +250,18 @@ class LoginActivity : AppCompatActivity() {
             finish()
         })
 
-        username?.afterTextChanged {
+        username.afterTextChanged {
             loginViewModel.loginDataChanged(
-                username?.text.toString(),
-                password?.text.toString()
+                username.text.toString(),
+                password.text.toString()
             )
         }
 
-        password?.apply {
+        password.apply {
             afterTextChanged {
                 loginViewModel.loginDataChanged(
-                    username?.text.toString(),
-                    password?.text.toString()
+                    username.text.toString(),
+                    password.text.toString()
                 )
             }
 
@@ -142,18 +269,18 @@ class LoginActivity : AppCompatActivity() {
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
                         loginViewModel.login(
-                            username?.text.toString(),
-                            password?.text.toString()
+                            username.text.toString(),
+                            password.text.toString()
                         )
                 }
                 false
             }
 
-            login.setOnClickListener {
+            signInButton.setOnClickListener {
                 loading.visibility = View.VISIBLE
-                loginViewModel.login(username?.text.toString(), password?.text.toString())
+                loginViewModel.login(username.text.toString(), password.text.toString())
             }
-        }
+        }*/
     }
 
     private fun updateUiWithUser(model: LoggedInUserView) {
@@ -171,45 +298,6 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
     }
 
-
-    // Fragment Adapter (這裡可能要改)
-    class SignAdapter : PagerAdapter() {
-
-        override fun getCount(): Int {
-            return 2
-        }
-
-        override fun isViewFromObject(view: View, `object`: Any): Boolean {
-            return `object`== view
-        }
-
-        override fun getPageTitle(position: Int): CharSequence? {
-            return when(position){
-                0 -> "Sign Up"
-                else -> "Sign In"
-            }
-        }
-
-        override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            val view : Any
-            when(position){
-                0 -> view = LayoutInflater.from(container.context).inflate(R.layout.title_signup,container,false)
-                else -> view = LayoutInflater.from(container.context).inflate(R.layout.title_signin,container,false)
-            }
-            container.addView(view)
-            return view
-        }
-
-    }
-
-    private fun setViewPagerAndTabLayout(){
-        val fragmentAdapter = SignAdapter()
-
-        viewPager.adapter = fragmentAdapter
-        //viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
-        //tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(viewPager))
-        tabLayout.setupWithViewPager(viewPager)
-    }
 
 }
 

@@ -2,10 +2,14 @@
     <string name="app_name">O-Detect</string>
     <string name="title_activity_signin">Sign In</string>
     <string name="title_activity_signup">Sign Up</string>
-    <string name="prompt_email">Email / Username</string>
+    <string name="prompt_email_or_username">Email / Username</string>
+    <string name="prompt_username">Username</string>
+    <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">登入</string>
+    <string name="action_sign_up">註冊</string>
     <string name="action_sign_in_short">Sign in</string>
+    <string name="action_sign_up_short">Sign up</string>
     <string name="welcome">"Welcome !"</string>
     <string name="invalid_username">Not a valid email or username</string>
     <string name="invalid_password">Password must be >5 characters</string>

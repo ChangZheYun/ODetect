@@ -18,19 +18,21 @@
 
         <ImageView
                 android:id="@+id/signInUsernameLogo"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@mipmap/profile"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/signInUsername"
                 app:layout_constraintBottom_toBottomOf="@+id/signInUsernameBlock"
-                android:layout_marginStart="50dp"/>
+                android:layout_marginStart="25dp"
+                android:layout_marginBottom="5dp"/>
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/signInUsername"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_email"
-                android:inputType="textEmailAddress"
+                android:hint="@string/prompt_username"
+                android:inputType="text"
                 android:imeOptions="actionNext"
                 android:selectAllOnFocus="true"
                 android:textColor="@color/colorSign"
@@ -38,6 +40,7 @@
                 app:layout_constraintStart_toEndOf="@id/signInUsernameLogo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="@+id/signInUsernameBlock"
+                android:layout_marginStart="10dp"
                 android:layout_marginEnd="25dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -51,14 +54,16 @@
 
             <ImageView
                     android:id="@+id/signInPasswordLogo"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@mipmap/lock"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/signInPassword"
                     app:layout_constraintBottom_toBottomOf="@+id/signInPasswordBlock"
-                    android:layout_marginStart="50dp"/>
+                    android:layout_marginStart="25dp"
+                    android:layout_marginBottom="5dp"/>
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/signInPassword"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -72,8 +77,26 @@
                     app:layout_constraintStart_toEndOf="@id/signInPasswordLogo"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="@+id/signInPasswordBlock"
+                    android:layout_marginStart="10dp"
                     android:layout_marginEnd="25dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/signInButton"
+        android:enabled="true"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/action_sign_in"
+        android:layout_marginBottom="5dp"
+        app:cornerRadius="20dp"
+        android:textSize="16sp"
+        android:padding="10dp"
+        android:gravity="center"
+        style="@style/loginButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -25,6 +25,9 @@
                 android:theme="@style/AppTheme.NoActionBar"
                 android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
+        <activity
+                android:name=".Content">
+        </activity>
     </application>
 
 </manifest>

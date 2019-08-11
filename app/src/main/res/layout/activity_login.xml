@@ -134,26 +134,19 @@
                     <androidx.viewpager.widget.ViewPager
                             android:id="@+id/signPager"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            android:minHeight="400dp"/>
 
+                    <ProgressBar
+                            android:id="@+id/loading"
+                            android:visibility="gone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
             </com.google.android.material.card.MaterialCardView>
+
+
 
     </LinearLayout>
 
-    <com.google.android.material.button.MaterialButton
-            android:id="@+id/signInButton"
-            android:enabled="true"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:text="@string/action_sign_in"
-            android:layout_marginBottom="5dp"
-            app:cornerRadius="20dp"
-            android:textSize="16sp"
-            android:padding="10dp"
-            android:gravity="center"
-            style="@style/loginButton"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
