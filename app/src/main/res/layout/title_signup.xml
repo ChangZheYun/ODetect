@@ -11,7 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/signUpEmailBlock"
             android:layout_width="match_parent"
-            android:layout_height="170dp"
+            android:layout_height="150dp"
             android:orientation="horizontal"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -67,7 +67,7 @@
                 android:layout_marginEnd="25dp"/>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-<!--
+
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/signUpUsernameBlock"
             android:layout_width="match_parent"
@@ -108,15 +108,16 @@
                     android:imeOptions="actionNext"
                     android:selectAllOnFocus="true">
             </com.google.android.material.textfield.TextInputEditText>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/signUpPasswordBlock"
             android:layout_width="match_parent"
             android:layout_height="90dp"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/signUpEmailBlock">
+            app:layout_constraintTop_toBottomOf="@+id/signUpUsernameBlock">
 
         <ImageView
                 android:id="@+id/signUpPasswordLogo"

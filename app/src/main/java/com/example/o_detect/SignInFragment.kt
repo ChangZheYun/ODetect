@@ -81,13 +81,16 @@ class SignInFragment : Fragment() {
                 auth = FirebaseAuth.getInstance()
                 auth.signInWithEmailAndPassword(inEmail.text.toString(), inPassword.text.toString())
                     .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
+                        val user = auth.currentUser
+                        if (task.isSuccessful && user!!.isEmailVerified) {    //user.isEmailVerified要先通過信箱驗證
                             Log.d(TAG, "signInWithEmail:Success")
-                            val user = auth.currentUser
                             startActivity(Intent(activity,Content::class.java))
-                        } else {
+                        }else if(!task.isSuccessful){
                             Log.w(TAG, "signInWithEmail:failure", task.exception)
                             Toast.makeText(activity, "帳號密碼錯誤",Toast.LENGTH_SHORT).show()
+                        }else{
+                            Log.w(TAG, "signInWithEmail:failure", task.exception)
+                            Toast.makeText(activity, "請先通過信箱驗證",Toast.LENGTH_SHORT).show()
                         }
                     }
             }

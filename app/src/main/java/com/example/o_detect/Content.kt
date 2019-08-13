@@ -11,6 +11,7 @@ class Content : AppCompatActivity(){
         setContentView(R.layout.content_display)
 
         setSupportActionBar(contentToolBar)
+
     }
 
 }

@@ -2,8 +2,8 @@
 <resources>
     <!--<color name="colorPrimary">#FCDC8D</color>
     <color name="colorPrimaryDark">#00574B</color>-->
-    <color name="colorPrimary">#FFD180</color>
-    <color name="colorPrimaryDark">#FFAB40</color>
+    <color name="colorPrimary">#FCDC8D</color>
+    <color name="colorPrimaryDark">#FFB74D</color>
     <color name="colorAccent">#00BCD4</color>
     <color name="colorSign">#000000</color>
     <color name="colorSignNoSelect">#757575</color>

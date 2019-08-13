@@ -65,4 +65,9 @@ class MainActivity : AppCompatActivity() {
         auth.removeAuthStateListener(authStateListener)
         super.onStop()
     }
+
+    override fun onDestroy() {
+        auth.signOut()
+        super.onDestroy()
+    }
 }
