@@ -9,61 +9,108 @@
         android:focusableInTouchMode="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/signInUsernameBlock"
+            android:id="@+id/signInEmailBlock"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="170dp"
             android:orientation="horizontal"
             app:layout_constraintTop_toTopOf="parent">
 
 
         <ImageView
-                android:id="@+id/signInUsernameLogo"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@mipmap/profile"
+                android:id="@+id/signInEmailLogo"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@mipmap/email"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/signInUsername"
-                app:layout_constraintBottom_toBottomOf="@+id/signInUsernameBlock"
+                app:layout_constraintEnd_toStartOf="@+id/signInEmailTextLayout"
+                app:layout_constraintBottom_toBottomOf="@+id/signInEmailBlock"
                 android:layout_marginStart="25dp"
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="25dp"/>
 
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/signInUsername"
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/signInEmailTextLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_username"
+                android:hint="@string/prompt_email"
+                app:layout_constraintStart_toEndOf="@id/signInEmailLogo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/signInEmailBlock"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="25dp"
+                app:errorEnabled="true"
+                android:background="@color/colorSignBackground"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signInEmailText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:imeOptions="actionNext"
+                    android:selectAllOnFocus="true">
+            </com.google.android.material.textfield.TextInputEditText>
+        </com.google.android.material.textfield.TextInputLayout>
+
+     <!--   <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/signInEmail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_email"
                 android:inputType="text"
                 android:imeOptions="actionNext"
                 android:selectAllOnFocus="true"
                 android:textColor="@color/colorSign"
                 android:textColorHint="@color/colorHint"
-                app:layout_constraintStart_toEndOf="@id/signInUsernameLogo"
+                app:layout_constraintStart_toEndOf="@id/signInEmailLogo"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="@+id/signInUsernameBlock"
+                app:layout_constraintBottom_toBottomOf="@+id/signInEmailBlock"
                 android:layout_marginStart="10dp"
-                android:layout_marginEnd="25dp"/>
+                android:layout_marginEnd="25dp"/>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/signInPasswordBlock"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="90dp"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/signInUsernameBlock">
+            app:layout_constraintTop_toBottomOf="@+id/signInEmailBlock">
 
             <ImageView
                     android:id="@+id/signInPasswordLogo"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:src="@mipmap/lock"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/signInPassword"
+                    app:layout_constraintEnd_toStartOf="@+id/signInPasswordTextLayout"
                     app:layout_constraintBottom_toBottomOf="@+id/signInPasswordBlock"
                     android:layout_marginStart="25dp"
-                    android:layout_marginBottom="5dp"/>
+                    android:layout_marginBottom="25dp"/>
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/signInPasswordTextLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_password"
+                    app:layout_constraintStart_toEndOf="@id/signInPasswordLogo"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/signInPasswordBlock"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="25dp"
+                    app:errorEnabled="true"
+                    android:background="@color/colorSignBackground"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/signInPasswordText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeActionLabel="@string/action_sign_in_short"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPassword"
+                        android:selectAllOnFocus="true">
+                </com.google.android.material.textfield.TextInputEditText>
+            </com.google.android.material.textfield.TextInputLayout>
+
+         <!--   <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/signInPassword"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -78,9 +125,10 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="@+id/signInPasswordBlock"
                     android:layout_marginStart="10dp"
-                    android:layout_marginEnd="25dp"/>
+                    android:layout_marginEnd="25dp"/>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/signInButton"

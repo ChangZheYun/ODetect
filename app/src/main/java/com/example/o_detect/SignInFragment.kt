@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseUser
 import androidx.annotation.NonNull
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.material.textfield.*
 import com.google.firebase.auth.AuthResult
 import java.lang.Exception
 
@@ -23,8 +24,10 @@ import java.lang.Exception
 class SignInFragment : Fragment() {
 
     private lateinit var inButton : Button
-    private lateinit var username : EditText
-    private lateinit var password : EditText
+    private lateinit var inEmail : TextInputEditText
+    private lateinit var inPassword : TextInputEditText
+    private lateinit var inEmailLayout : TextInputLayout
+    private lateinit var inPasswordLayout : TextInputLayout
     private val TAG = "sign in"
     private val TAG1 = "username"
     private val TAG2 = "password"
@@ -51,17 +54,32 @@ class SignInFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         inButton = activity!!.findViewById(R.id.signInButton)
-        username = activity!!.findViewById(R.id.signInUsername)
-        password = activity!!.findViewById(R.id.signInPassword)
+        inEmail = activity!!.findViewById(R.id.signInEmailText)
+        inPassword = activity!!.findViewById(R.id.signInPasswordText)
+        inEmailLayout = activity!!.findViewById(R.id.signInEmailTextLayout)
+        inPasswordLayout = activity!!.findViewById(R.id.signInPasswordTextLayout)
+
 
         inButton.setOnClickListener{
           /*  Log.d(TAG1,username.text.toString())
             Log.d(TAG2,password.text.toString())
             Toast.makeText(activity,"HHH",Toast.LENGTH_SHORT).show()*/
 
-            if(username.text.toString()!="" && password.text.toString()!="") {
+            if(inEmail.text!!.isEmpty() && inPassword.text!!.isEmpty()){
+                inEmailLayout.isErrorEnabled = true
+                inEmailLayout.error = "Error in email."
+                inPasswordLayout.error = "Error in password."
+            }
+            else if(inEmail.text!!.isEmpty()){
+                inEmailLayout.isErrorEnabled = true
+                inEmailLayout.error = "Error in email."
+            }
+            else if(inPassword.text!!.isEmpty()){
+                inPasswordLayout.error = "Error in password."
+            }
+            else{
                 auth = FirebaseAuth.getInstance()
-                auth.signInWithEmailAndPassword(username.text.toString(), password.text.toString())
+                auth.signInWithEmailAndPassword(inEmail.text.toString(), inPassword.text.toString())
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             Log.d(TAG, "signInWithEmail:Success")
@@ -69,6 +87,7 @@ class SignInFragment : Fragment() {
                             startActivity(Intent(activity,Content::class.java))
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.exception)
+                            Toast.makeText(activity, "帳號密碼錯誤",Toast.LENGTH_SHORT).show()
                         }
                     }
             }

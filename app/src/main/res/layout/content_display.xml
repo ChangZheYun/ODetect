@@ -9,17 +9,17 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        android:fitsSystemWindows="true"
-        tools:context=".Content"
-        android:background="@color/colorPrimary">
+        tools:context=".Content">
 
-        <TextView
+        <androidx.appcompat.widget.Toolbar
+                android:id="@+id/contentToolBar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="FFFFFFFFF"
-                android:layout_margin="50dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                android:layout_height="?attr/actionBarSize"
+                android:minHeight="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.appcompat.widget.Toolbar>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

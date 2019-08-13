@@ -11,23 +11,46 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/signUpEmailBlock"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="170dp"
             android:orientation="horizontal"
             app:layout_constraintTop_toTopOf="parent">
 
 
         <ImageView
                 android:id="@+id/signUpEmailLogo"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:src="@mipmap/email"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/signUpEmail"
+                app:layout_constraintEnd_toStartOf="@+id/signUpEmailTextLayout"
                 app:layout_constraintBottom_toBottomOf="@+id/signUpEmailBlock"
                 android:layout_marginStart="25dp"
-                android:layout_marginBottom="2dp"/>
+                android:layout_marginBottom="25dp"/>
 
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/signUpEmailTextLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_email"
+                app:layout_constraintStart_toEndOf="@id/signUpEmailLogo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/signUpEmailBlock"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="25dp"
+                app:errorEnabled="true"
+                android:background="@color/colorSignBackground"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signUpEmailText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:imeOptions="actionNext"
+                    android:selectAllOnFocus="true">
+            </com.google.android.material.textfield.TextInputEditText>
+        </com.google.android.material.textfield.TextInputLayout>
+
+      <!--  <EditText
                 android:id="@+id/signUpEmail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -41,66 +64,96 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="@+id/signUpEmailBlock"
                 android:layout_marginStart="10dp"
-                android:layout_marginEnd="25dp"/>
+                android:layout_marginEnd="25dp"/>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
+<!--
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/signUpUsernameBlock"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="85dp"
             android:orientation="horizontal"
             app:layout_constraintTop_toBottomOf="@+id/signUpEmailBlock">
 
 
         <ImageView
                 android:id="@+id/signUpUsernameLogo"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:src="@mipmap/profile"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/signUpUsername"
+                app:layout_constraintEnd_toStartOf="@+id/signUpUsernameTextLayout"
                 app:layout_constraintBottom_toBottomOf="@+id/signUpUsernameBlock"
                 android:layout_marginStart="25dp"
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="27dp"/>
 
-        <EditText
-                android:id="@+id/signUpUsername"
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/signUpUsernameTextLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_username"
-                android:inputType="text"
-                android:imeOptions="actionNext"
-                android:selectAllOnFocus="true"
-                android:textColor="@color/colorSign"
-                android:textColorHint="@color/colorHint"
                 app:layout_constraintStart_toEndOf="@id/signUpUsernameLogo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="@+id/signUpUsernameBlock"
                 android:layout_marginStart="10dp"
-                android:layout_marginEnd="25dp"/>
+                android:layout_marginEnd="25dp"
+                app:errorEnabled="true"
+                android:background="@color/colorSignBackground"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signUpUsernameText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:imeOptions="actionNext"
+                    android:selectAllOnFocus="true">
+            </com.google.android.material.textfield.TextInputEditText>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/signUpPasswordBlock"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="90dp"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/signUpUsernameBlock">
+            app:layout_constraintTop_toBottomOf="@+id/signUpEmailBlock">
 
         <ImageView
                 android:id="@+id/signUpPasswordLogo"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:src="@mipmap/lock"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/signUpPassword"
+                app:layout_constraintEnd_toStartOf="@+id/signUpPasswordTextLayout"
                 app:layout_constraintBottom_toBottomOf="@+id/signUpPasswordBlock"
                 android:layout_marginStart="25dp"
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="27dp"/>
 
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/signUpPasswordTextLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_password"
+                app:layout_constraintStart_toEndOf="@id/signUpPasswordLogo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/signUpPasswordBlock"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="25dp"
+                app:errorEnabled="true"
+                android:background="@color/colorSignBackground"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signUpPasswordText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeActionLabel="@string/action_sign_up_short"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:selectAllOnFocus="true">
+            </com.google.android.material.textfield.TextInputEditText>
+        </com.google.android.material.textfield.TextInputLayout>
+
+    <!--    <EditText
                 android:id="@+id/signUpPassword"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -115,7 +168,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="@+id/signUpPasswordBlock"
                 android:layout_marginStart="10dp"
-                android:layout_marginEnd="25dp"/>
+                android:layout_marginEnd="25dp"/>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

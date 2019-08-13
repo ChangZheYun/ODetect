@@ -23,15 +23,15 @@ class MainActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
             Handler().postDelayed({
-              /*  val user = firebaseAuth.currentUser
+                val user = firebaseAuth.currentUser
                 if (user == null) //無登入
-                {*/
+                {
                     startActivity(Intent(this@MainActivity, LoginActivity::class.java))
-           /*     }
+                }
                 else  //已登入
                 {
                     startActivity(Intent(this@MainActivity, Content::class.java))
-                }*/
+                }
                 finish()
                 //進入/退出動畫
                 // overridePendingTransition(R.anim.abc_fade_in,R.anim.abc_fade_out)
