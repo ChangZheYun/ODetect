@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/titleUploadImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/uploadImageBlock"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="20dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="100dp">
+
+            <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/uploadImageBlock"
+                    app:layout_constraintBottom_toTopOf="@+id/imageResult"
+                    android:layout_marginBottom="20dp"
+                    android:visibility="invisible"/>
+
+            <androidx.core.widget.ContentLoadingProgressBar
+                    android:id="@+id/uploadImageProgress"
+                    android:layout_width="250dp"
+                    android:layout_height="20dp"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:indeterminate="true"
+                    app:layout_constraintTop_toTopOf="@+id/uploadImageBlock"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageResult"
+                    app:layout_constraintStart_toStartOf="@+id/uploadImageBlock"
+                    app:layout_constraintEnd_toEndOf="@+id/uploadImageBlock"
+                    android:layout_marginBottom="35dp"
+                    android:visibility="invisible"/>
+                    <!--
+                    android:progress="0"
+                    android:max="100"-->
+
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/uploadImageButton"
+                    android:enabled="true"
+                    android:layout_width="0dp"
+                    android:layout_height="250dp"
+                    android:text="@string/upload_image"
+                    app:cornerRadius="20dp"
+                    android:textSize="50sp"
+                    android:gravity="center"
+                    app:strokeWidth="3dp"
+                    app:strokeColor="@color/colorAccent"
+                    app:rippleColor="@color/uploadButtonPress"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+                    app:layout_constraintTop_toTopOf="@id/uploadImageBlock"
+                    app:layout_constraintBottom_toTopOf="@+id/imageResult"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                    android:id="@+id/imageResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    app:layout_constraintTop_toBottomOf="@id/uploadImageButton"
+                    android:layout_marginTop="20dp"
+                    android:text="TEST"
+                    android:textSize="20sp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/insertImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@id/uploadImageBlock"
+                    app:layout_constraintEnd_toEndOf="@id/uploadImageBlock"
+                    android:layout_margin="16dp"
+                    app:srcCompat="@drawable/photo"
+                    app:maxImageSize="32dp"
+                    style="@style/loginButton">
+        <!-- style="@style/Widget.Design.FloatingActionButton"-->
+
+
+    </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

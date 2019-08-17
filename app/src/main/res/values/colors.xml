@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--<color name="colorPrimary">#FCDC8D</color>
-    <color name="colorPrimaryDark">#00574B</color>-->
-    <color name="colorPrimary">#FCDC8D</color>
-    <color name="colorPrimaryDark">#FFB74D</color>
+    <color name="colorPrimaryDark">#00574B</color>#00BCD4-->
+    <color name="colorPrimary">#FFCC80</color>
+    <color name="colorPrimaryDark">#CA9B52</color>
     <color name="colorAccent">#00BCD4</color>
     <color name="colorSign">#000000</color>
     <color name="colorSignNoSelect">#757575</color>
@@ -12,7 +12,10 @@
     <color name="colorSignBackground">#FFFFFF</color>
     <color name="colorText">#FFFFFF</color>
     <color name="colorButtonNormal">#1E90FF</color>
-    <color name="colorButtonPress">	#87CEFA</color>
+    <color name="colorButtonPress">	#0077EA</color>
+    <color name="uploadButtonText">#1E90FF</color>
+    <color name="uploadButtonNormal">#FFFFFF</color>
+    <color name="uploadButtonPress">#008FA1</color>
 
     <!--orange-->
     <color name="md_orange_50">#FFF3E0</color>

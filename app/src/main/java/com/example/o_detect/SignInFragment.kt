@@ -2,6 +2,7 @@ package com.example.o_detect
 
 import android.app.Activity
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.util.Log
@@ -12,12 +13,17 @@ import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
 import com.example.o_detect.ui.login.LoginActivity
 import android.content.Intent
+import android.view.inputmethod.InputMethodManager
 import com.google.firebase.auth.FirebaseUser
 import androidx.annotation.NonNull
+import androidx.core.content.ContextCompat.getSystemService
+import com.dd.CircularProgressButton
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.*
 import com.google.firebase.auth.AuthResult
+import kotlinx.android.synthetic.main.title_signin.*
 import java.lang.Exception
 
 
@@ -37,7 +43,6 @@ class SignInFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view : View = inflater.inflate(R.layout.title_signin,container,false)
 
-
         /*auth = FirebaseAuth.getInstance()
         auth.signInWithEmailAndPassword(username.text.toString(),password.text.toString())
             .addOnCompleteListener(this){ task ->
@@ -53,6 +58,7 @@ class SignInFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         inButton = activity!!.findViewById(R.id.signInButton)
         inEmail = activity!!.findViewById(R.id.signInEmailText)
         inPassword = activity!!.findViewById(R.id.signInPasswordText)
@@ -61,9 +67,11 @@ class SignInFragment : Fragment() {
 
 
         inButton.setOnClickListener{
-          /*  Log.d(TAG1,username.text.toString())
-            Log.d(TAG2,password.text.toString())
-            Toast.makeText(activity,"HHH",Toast.LENGTH_SHORT).show()*/
+
+            //隱藏鍵盤
+            val imm  = inPassword.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view!!.windowToken,0)
+
 
             if(inEmail.text!!.isEmpty() && inPassword.text!!.isEmpty()){
                 inEmailLayout.isErrorEnabled = true
@@ -87,10 +95,21 @@ class SignInFragment : Fragment() {
                             startActivity(Intent(activity,Content::class.java))
                         }else if(!task.isSuccessful){
                             Log.w(TAG, "signInWithEmail:failure", task.exception)
-                            Toast.makeText(activity, "帳號密碼錯誤",Toast.LENGTH_SHORT).show()
+                            val warning = Snackbar.make(view!!, "帳號密碼錯誤", Snackbar.LENGTH_SHORT)
+                            warning.duration = 5000
+                            warning.setAction("清空", View.OnClickListener{
+                                inEmail.setText("")
+                                inPassword.setText("")
+                            }).show()
+
+                           // Toast.makeText(activity, "帳號密碼錯誤",Toast.LENGTH_SHORT).show()
+                           // inPassword.setText("")
+
                         }else{
                             Log.w(TAG, "signInWithEmail:failure", task.exception)
-                            Toast.makeText(activity, "請先通過信箱驗證",Toast.LENGTH_SHORT).show()
+                            val warning = Snackbar.make(view!!, "請先通過信箱驗證", Snackbar.LENGTH_SHORT)
+                            warning.duration = 5000
+                            warning.show()
                         }
                     }
             }

@@ -282,7 +282,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }*/
     }
-
+/*
     private fun updateUiWithUser(model: LoggedInUserView) {
         val welcome = getString(R.string.welcome)
         val displayName = model.displayName
@@ -296,11 +296,11 @@ class LoginActivity : AppCompatActivity() {
 
     private fun showLoginFailed(@StringRes errorString: Int) {
         Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
-    }
+    }*/
 
 }
 
-
+/*
 /**
  * Extension function to simplify setting an afterTextChanged action to EditText components.
  */
@@ -314,4 +314,4 @@ fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
 
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
     })
-}
+}*/

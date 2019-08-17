@@ -1,11 +1,13 @@
 package com.example.o_detect
 
+import android.content.Context
 import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.google.android.material.textfield.*
 import com.google.firebase.auth.FirebaseAuth
@@ -43,6 +45,9 @@ class SignUpFragment:Fragment() {
 
         upButton.setOnClickListener{
 
+            //隱藏鍵盤
+            val imm  = upPassword.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view!!.windowToken,0)
 
             if(upEmail.text!!.isEmpty()){
                 upEmailLayout.error = "Error in email."  //另一個效果可用:upEmail.error
@@ -76,16 +81,13 @@ class SignUpFragment:Fragment() {
                             Toast.makeText(activity, "Authentication Success.",Toast.LENGTH_SHORT).show()
 
                             //將註冊資料寫入firebase
-                            val database = FirebaseDatabase.getInstance()
-                            val user_id : String = user?.uid.toString()
-                            var path : String = "User/$user_id"
-                            var userRef = database.getReference(path)
-                            userRef.setValue(user_id)
-                            path = "User/$user_id/email"
-                            userRef = database.getReference(path)
+                            val databaseRef = FirebaseDatabase.getInstance().reference
+                            val userId : String = user?.uid.toString()
+                            var path = "User/$userId/email"
+                            var userRef = databaseRef.child(path)
                             userRef.setValue(user?.email.toString())
-                            path = "User/$user_id/username"
-                            userRef = database.getReference(path)
+                            path = "User/$userId/username"
+                            userRef = databaseRef.child(path)
                             userRef.setValue(upUsername.text.toString())
 
                         } else {

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/fragmentProfile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profileUsernameBlock"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="@id/fragmentProfile"
+        app:layout_constraintStart_toStartOf="@id/fragmentProfile"
+        app:layout_constraintEnd_toEndOf="@id/fragmentProfile">
+
+        <TextView
+                android:id="@+id/profileUsernameHint"
+                android:layout_width="100dp"
+                android:layout_height="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/profileUsername"
+                app:layout_constraintBottom_toBottomOf="@id/profileUsernameBlock"
+                android:layout_marginStart="25dp"
+                android:layout_marginBottom="10dp"
+                android:text="Username:"
+                android:textSize="20sp"/>
+        <TextView
+                android:id="@+id/profileUsername"
+                android:layout_width="250dp"
+                android:layout_height="0dp"
+                app:layout_constraintStart_toEndOf="@id/profileUsernameHint"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/profileUsernameBlock"
+                android:layout_marginEnd="25dp"
+                android:layout_marginBottom="10dp"
+                android:textSize="20sp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/signOutButton"
+            android:enabled="true"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="@string/action_sign_out"
+            android:layout_marginBottom="5dp"
+            app:cornerRadius="200dp"
+            android:textSize="16sp"
+            android:padding="10dp"
+            android:gravity="center"
+            style="@style/loginButton"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
