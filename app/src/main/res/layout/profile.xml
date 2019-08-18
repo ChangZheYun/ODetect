@@ -5,19 +5,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:fitsSystemWindows="true"
         android:focusable="true"
         android:focusableInTouchMode="true">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/profileUsernameBlock"
+        android:id="@+id/profileBlock"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         app:layout_constraintTop_toTopOf="@id/fragmentProfile"
         app:layout_constraintStart_toStartOf="@id/fragmentProfile"
         app:layout_constraintEnd_toEndOf="@id/fragmentProfile">
 
-        <TextView
+      <!--  <TextView
                 android:id="@+id/profileUsernameHint"
                 android:layout_width="100dp"
                 android:layout_height="0dp"
@@ -27,21 +29,118 @@
                 android:layout_marginStart="25dp"
                 android:layout_marginBottom="10dp"
                 android:text="Username:"
-                android:textSize="20sp"/>
+                android:textSize="20sp"/>-->
         <TextView
                 android:id="@+id/profileUsername"
-                android:layout_width="250dp"
+                android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                app:layout_constraintStart_toEndOf="@id/profileUsernameHint"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="@id/profileUsernameBlock"
-                android:layout_marginEnd="25dp"
-                android:layout_marginBottom="10dp"
+                app:layout_constraintStart_toStartOf="@id/profileBlock"
+                app:layout_constraintTop_toTopOf="@id/profileBlock"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+        <TextView
+                android:id="@+id/profileEmailHint"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:text="@string/profile_email"
+                app:layout_constraintStart_toStartOf="@id/profileBlock"
+                app:layout_constraintTop_toBottomOf="@id/profileUsername"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
                 android:textSize="20sp"/>
+
+        <TextView
+                android:id="@+id/profileEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constraintStart_toEndOf="@id/profileEmailHint"
+                app:layout_constraintTop_toBottomOf="@id/profileUsername"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:textSize="20sp"/>
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/updateUsernameButton"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                style="@style/loginButton"
+                android:text="@string/action_update_username"
+                android:textSize="16sp"
+                android:padding="10dp"
+                android:gravity="center"
+                android:enabled="true"
+                app:layout_constraintTop_toBottomOf="@id/profileEmailHint"
+                app:layout_constraintStart_toStartOf="@id/profileBlock"
+                app:layout_constraintEnd_toStartOf="@id/updatePasswordButton"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="15dp"/>
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/updatePasswordButton"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                style="@style/loginButton"
+                android:text="@string/action_update_password"
+                android:textSize="16sp"
+                android:padding="10dp"
+                android:gravity="center"
+                android:enabled="true"
+                app:layout_constraintTop_toBottomOf="@id/profileEmailHint"
+                app:layout_constraintStart_toEndOf="@id/updateUsernameButton"
+                app:layout_constraintEnd_toStartOf="@id/signOutButton"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="15dp"/>
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/signOutButton"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                style="@style/loginButton"
+                android:text="@string/action_sign_out"
+                android:textSize="16sp"
+                android:padding="10dp"
+                android:gravity="center"
+                android:enabled="true"
+                app:layout_constraintTop_toBottomOf="@id/profileEmailHint"
+                app:layout_constraintStart_toEndOf="@id/updatePasswordButton"
+                app:layout_constraintEnd_toEndOf="@id/profileBlock"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="15dp"/>
+
+     <!--   <com.google.android.material.button.MaterialButton
+                android:id="@+id/signOutButton"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/profileUsername"
+                app:layout_constraintStart_toEndOf="@id/updateEmailButton"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="15dp"
+                android:textSize="16sp"
+                android:padding="10dp"
+                android:gravity="center"
+                android:enabled="true"/>-->
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.button.MaterialButton
+
+    <com.google.android.material.card.MaterialCardView
+            android:id="@+id/profileCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:minHeight="150dp"
+            style="@style/mediumCardView"
+            app:layout_constraintTop_toBottomOf="@id/profileBlock"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+    </com.google.android.material.card.MaterialCardView>
+
+   <!-- <com.google.android.material.button.MaterialButton
             android:id="@+id/signOutButton"
             android:enabled="true"
             android:layout_width="200dp"
@@ -55,7 +154,7 @@
             style="@style/loginButton"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"/>-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

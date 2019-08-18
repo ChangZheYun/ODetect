@@ -11,7 +11,7 @@
     <color name="mediumComponent">#FFFFFF</color>
     <color name="colorSignBackground">#FFFFFF</color>
     <color name="colorText">#FFFFFF</color>
-    <color name="colorButtonNormal">#1E90FF</color>
+    <color name="colorButtonNormal">#389DFF</color> <!--#1E90FF-->
     <color name="colorButtonPress">	#0077EA</color>
     <color name="uploadButtonText">#1E90FF</color>
     <color name="uploadButtonNormal">#FFFFFF</color>

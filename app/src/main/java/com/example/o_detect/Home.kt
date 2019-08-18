@@ -42,7 +42,7 @@ class Home : Fragment(){
         override fun getPageTitle(position: Int): CharSequence? {
             return when(position){
                 0 -> "上傳圖片"
-                else -> "資料查看"
+                else -> "個別管理"
             }
         }
     }
@@ -66,7 +66,7 @@ class Home : Fragment(){
         contentViewPager.bringToFront()
         contentTabLayout.bringToFront()
         contentTabLayout.addTab(contentTabLayout.newTab().setText("上傳圖片"))
-        contentTabLayout.addTab(contentTabLayout.newTab().setText("資料查看"))
+        contentTabLayout.addTab(contentTabLayout.newTab().setText("個別管理"))
         setViewPagerAndTabLayout()
         contentViewPager.currentItem = 0
 
