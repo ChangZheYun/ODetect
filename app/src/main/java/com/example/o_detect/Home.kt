@@ -28,11 +28,12 @@ class Home : Fragment(){
 
         init{
             fragmentList.add(UpImageFragment())
+            fragmentList.add(FarmFragment())
             fragmentList.add(DataListFragment())
         }
 
         override fun getCount(): Int {
-            return 2
+            return 3
         }
 
         override fun getItem(position: Int): Fragment {
@@ -42,6 +43,7 @@ class Home : Fragment(){
         override fun getPageTitle(position: Int): CharSequence? {
             return when(position){
                 0 -> "上傳圖片"
+                1 -> "農場概況"
                 else -> "個別管理"
             }
         }
@@ -63,9 +65,11 @@ class Home : Fragment(){
         contentViewPager = activity!!.findViewById(R.id.contentPager)
         contentTabLayout = activity!!.findViewById(R.id.contentTabs)
 
-        contentViewPager.bringToFront()
-        contentTabLayout.bringToFront()
+       /* contentTabLayout.bringToFront()
+        contentViewPager.bringToFront()*/
+
         contentTabLayout.addTab(contentTabLayout.newTab().setText("上傳圖片"))
+        contentTabLayout.addTab(contentTabLayout.newTab().setText("農場概況"))
         contentTabLayout.addTab(contentTabLayout.newTab().setText("個別管理"))
         setViewPagerAndTabLayout()
         contentViewPager.currentItem = 0

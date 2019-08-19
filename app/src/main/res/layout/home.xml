@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/fragmentHome"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
+        android:orientation="vertical">
 
         <com.google.android.material.tabs.TabLayout
                 android:id="@+id/contentTabs"
@@ -22,18 +18,11 @@
                 app:tabGravity="fill"
                 app:tabMode="fixed"
                 app:tabBackground="@color/colorPrimary"
-                app:tabTextAppearance="@style/contentTabLayoutAppearance"
-                app:layout_constraintStart_toStartOf="@id/fragmentHome"
-                app:layout_constraintEnd_toEndOf="@id/fragmentHome"
-                app:layout_constraintTop_toTopOf="@id/fragmentHome"/>
+                app:tabTextAppearance="@style/contentTabLayoutAppearance"/>
 
         <androidx.viewpager.widget.ViewPager
                 android:id="@+id/contentPager"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@id/fragmentHome"
-                app:layout_constraintEnd_toEndOf="@id/fragmentHome"
-                app:layout_constraintTop_toTopOf="@id/contentTabs"/>
+                android:layout_height="wrap_content"/>
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
