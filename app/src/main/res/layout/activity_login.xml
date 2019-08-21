@@ -110,7 +110,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="25dp">
+            android:layout_marginBottom="5dp">
 
             <com.google.android.material.card.MaterialCardView
                     android:id="@+id/signViewCard"
@@ -122,7 +122,7 @@
                     <com.google.android.material.tabs.TabLayout
                             android:id="@+id/signTabs"
                             android:layout_width="match_parent"
-                            android:layout_height="60dp"
+                            android:layout_height="50dp"
                             app:tabMinWidth="150dp"
                             app:tabSelectedTextColor="@color/colorSign"
                             app:tabTextColor="@color/colorSignNoSelect"

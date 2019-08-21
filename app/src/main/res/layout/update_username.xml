@@ -4,23 +4,26 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent" >
 
-    <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/updateUsernameTextLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/prompt_username"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            app:errorEnabled="true"
-            android:background="@color/colorSignBackground"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/updateUsernameText"
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/updateUsernameTextLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:selectAllOnFocus="true">
-        </com.google.android.material.textfield.TextInputEditText>
-    </com.google.android.material.textfield.TextInputLayout>
+                android:hint="@string/prompt_username"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                app:errorEnabled="true"
+                app:counterEnabled="true"
+                app:counterMaxLength="10"
+                android:background="@color/colorSignBackground"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/updateUsernameText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:maxLength="10"
+                    android:selectAllOnFocus="true">
+            </com.google.android.material.textfield.TextInputEditText>
+        </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>

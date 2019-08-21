@@ -3,12 +3,16 @@ package com.example.o_detect
 import android.content.Context
 import androidx.fragment.app.Fragment
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -43,20 +47,62 @@ class SignUpFragment:Fragment() {
         upUsernameLayout = activity!!.findViewById(R.id.signUpUsernameTextLayout)
         upPasswordLayout = activity!!.findViewById(R.id.signUpPasswordTextLayout)
 
+
+        //點擊EditText時取消錯誤訊息(以後可加入即時判斷輸入是否符合格式)
+        upEmail.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                //先設置false取消掉錯誤訊息，再設置true避免物件位置偏移
+                upEmailLayout.isErrorEnabled = false
+                upEmailLayout.isErrorEnabled = true
+            }
+        })
+        upUsername.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                upUsernameLayout.isErrorEnabled = false
+                upUsernameLayout.isErrorEnabled = true
+            }
+        })
+        upPassword.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                upPasswordLayout.isErrorEnabled = false
+                upPasswordLayout.isErrorEnabled = true
+            }
+        })
+
+        //inPassword點擊enter時自動點選登入按鈕
+        upPassword.setOnKeyListener( View.OnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                upButton.callOnClick()
+                return@OnKeyListener true
+            }
+            false
+        })
+
         upButton.setOnClickListener{
 
             //隱藏鍵盤
             val imm  = upPassword.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view!!.windowToken,0)
 
+            //清除焦點
+            upEmail.clearFocus()
+            upUsername.clearFocus()
+            upPassword.clearFocus()
+
             if(upEmail.text!!.isEmpty()){
-                upEmailLayout.error = "Error in email."  //另一個效果可用:upEmail.error
+                upEmailLayout.error = "Email can't be empty."  //另一個效果可用:upEmail.error
             }
             if(upUsername.text!!.isEmpty()){
-                upUsernameLayout.error = "Error in username."
+                upUsernameLayout.error = "Username can't be empty."
             }
             if(upPassword.text!!.isEmpty()){
-                upPasswordLayout.error = "Error in password."
+                upPasswordLayout.error = "Password can't be empty."
             }
             if(upEmail.text!!.isNotEmpty() &&  upUsername.text!!.isNotEmpty() && upPassword.text!!.isNotEmpty()){
                 auth = FirebaseAuth.getInstance()
@@ -72,28 +118,47 @@ class SignUpFragment:Fragment() {
                             user?.sendEmailVerification()
                                 ?.addOnCompleteListener{task ->
                                     if (task.isSuccessful) {
+
                                         Log.d(TAG, "Email sent.")
+
+                                        val info = Snackbar.make(view!!, "註冊成功，請收取驗證信", Snackbar.LENGTH_SHORT)
+                                        info.duration = 5000
+                                        info.show()
+
+                                        //將註冊資料寫入firebase
+                                        val databaseRef = FirebaseDatabase.getInstance().reference
+                                        val userId : String = user.uid.toString()
+                                        var path = "User/$userId/email"
+                                        var userRef = databaseRef.child(path)
+                                        userRef.setValue(user.email.toString())
+                                        path = "User/$userId/username"
+                                        userRef = databaseRef.child(path)
+                                        userRef.setValue(upUsername.text.toString())
                                     }
                                     else{
+
                                         Log.d(TAG, "Email failure.")
+
+                                        val info = Snackbar.make(view!!, "註冊失敗，${task.exception}", Snackbar.LENGTH_SHORT)
+                                        info.duration = 5000
+                                        info.show()
+
                                     }
                                 }
-                            Toast.makeText(activity, "Authentication Success.",Toast.LENGTH_SHORT).show()
 
-                            //將註冊資料寫入firebase
-                            val databaseRef = FirebaseDatabase.getInstance().reference
-                            val userId : String = user?.uid.toString()
-                            var path = "User/$userId/email"
-                            var userRef = databaseRef.child(path)
-                            userRef.setValue(user?.email.toString())
-                            path = "User/$userId/username"
-                            userRef = databaseRef.child(path)
-                            userRef.setValue(upUsername.text.toString())
+
 
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                            Toast.makeText(activity, "Authentication failed.",Toast.LENGTH_SHORT).show()
+
+                            val info = Snackbar.make(view!!, "註冊失敗，${task.exception}", Snackbar.LENGTH_SHORT)
+                            info.duration = 5000
+                            info.setAction("清空", View.OnClickListener{
+                                upEmail.setText("")
+                                upUsername.setText("")
+                                upPassword.setText("")
+                            }).show()
                         }
                     }
             }

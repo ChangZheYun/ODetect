@@ -13,6 +13,10 @@ import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
 import com.example.o_detect.ui.login.LoginActivity
 import android.content.Intent
+import android.text.Editable
+import android.text.TextWatcher
+import android.text.util.Linkify
+import android.view.KeyEvent
 import android.view.inputmethod.InputMethodManager
 import com.google.firebase.auth.FirebaseUser
 import androidx.annotation.NonNull
@@ -25,6 +29,7 @@ import com.google.android.material.textfield.*
 import com.google.firebase.auth.AuthResult
 import kotlinx.android.synthetic.main.title_signin.*
 import java.lang.Exception
+
 
 
 class SignInFragment : Fragment() {
@@ -66,24 +71,55 @@ class SignInFragment : Fragment() {
         inPasswordLayout = activity!!.findViewById(R.id.signInPasswordTextLayout)
 
 
+        //點擊EditText時取消錯誤訊息(以後可加入即時判斷輸入是否符合格式)
+        inEmail.addTextChangedListener(object : TextWatcher{
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                //先設置false取消掉錯誤訊息，再設置true避免物件位置偏移
+                inEmailLayout.isErrorEnabled = false
+                inEmailLayout.isErrorEnabled = true
+            }
+        })
+        inPassword.addTextChangedListener(object : TextWatcher{
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                inPasswordLayout.isErrorEnabled = false
+                inPasswordLayout.isErrorEnabled = true
+            }
+        })
+
+        //inPassword點擊enter時自動點選登入按鈕
+        inPassword.setOnKeyListener( View.OnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                inButton.callOnClick()
+                return@OnKeyListener true
+            }
+            false
+        })
+
         inButton.setOnClickListener{
 
             //隱藏鍵盤
             val imm  = inPassword.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view!!.windowToken,0)
 
+            //清除焦點
+            inEmail.clearFocus()
+            inPassword.clearFocus()
 
             if(inEmail.text!!.isEmpty() && inPassword.text!!.isEmpty()){
                 inEmailLayout.isErrorEnabled = true
-                inEmailLayout.error = "Error in email."
-                inPasswordLayout.error = "Error in password."
+                inEmailLayout.error = "Email can't be empty."
+                inPasswordLayout.error = "Password can't be empty."
             }
             else if(inEmail.text!!.isEmpty()){
                 inEmailLayout.isErrorEnabled = true
-                inEmailLayout.error = "Error in email."
+                inEmailLayout.error = "Email can't be empty."
             }
             else if(inPassword.text!!.isEmpty()){
-                inPasswordLayout.error = "Error in password."
+                inPasswordLayout.error = "Password can't be empty."
             }
             else{
                 auth = FirebaseAuth.getInstance()
@@ -101,10 +137,6 @@ class SignInFragment : Fragment() {
                                 inEmail.setText("")
                                 inPassword.setText("")
                             }).show()
-
-                           // Toast.makeText(activity, "帳號密碼錯誤",Toast.LENGTH_SHORT).show()
-                           // inPassword.setText("")
-
                         }else{
                             Log.w(TAG, "signInWithEmail:failure", task.exception)
                             val warning = Snackbar.make(view!!, "請先通過信箱驗證", Snackbar.LENGTH_SHORT)

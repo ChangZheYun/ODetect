@@ -98,11 +98,12 @@ class UpImageFragment : Fragment() {
                         imageView.visibility = View.INVISIBLE
 
                         val url = data!!.data
+                        val userId = FirebaseAuth.getInstance().currentUser?.uid.toString()
 
                         //設定圖片名稱(當前時間)
                         val imageName = DateUtils.formatDate(Date(), "yyyyMMdd-HH:mm:ss")
                         //設定上傳Ref
-                        val userUploadImageRef = storageFirebase.reference.child("images/$imageName.jpg")
+                        val userUploadImageRef = storageFirebase.reference.child("$userId/$imageName.jpg")
                         val userUploadImage = userUploadImageRef.putFile(url!!)
                         //取得DownloadURL
                         userUploadImage.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>>{ task->
@@ -114,9 +115,8 @@ class UpImageFragment : Fragment() {
                             return@Continuation userUploadImageRef.downloadUrl
                         }).addOnCompleteListener { task ->
                             if(task.isSuccessful){
-                                val userId = FirebaseAuth.getInstance().currentUser?.uid.toString()
-                                val path = "User/$userId/checkImageURL/$imageName"
-                                val databaseRef = FirebaseDatabase.getInstance().reference.child(path)
+                                var path = "User/$userId/checkImageURL/$imageName/URL"
+                                val databaseRef = FirebaseDatabase.getInstance().reference
 
                               /*  databaseRef.addListenerForSingleValueEvent( object:ValueEventListener{
 
@@ -129,7 +129,9 @@ class UpImageFragment : Fragment() {
                                             Log.d("TEST-data",checkImageURL[i])
                                     }
                                 })*/
-                                databaseRef.setValue(task.result.toString()) //task.result取得downloadURL
+                                databaseRef.child(path).setValue(task.result.toString()) //task.result取得downloadURL
+                                path = "User/$userId/checkImageURL/$imageName/result"
+                                databaseRef.child(path).setValue("Health")
                                 Toast.makeText(activity,"照片上傳成功,URL=${task.result}",Toast.LENGTH_SHORT).show()
                             }
 
