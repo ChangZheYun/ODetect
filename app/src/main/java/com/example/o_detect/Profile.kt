@@ -34,11 +34,11 @@ class Profile:Fragment() {
 
         val auth = FirebaseAuth.getInstance()
         val userId = auth.currentUser!!.uid
-        var path = "User/$userId/username"
+        val path = "User/$userId"
         val databaseRef = FirebaseDatabase.getInstance().reference
 
         //持續監聽
-        databaseRef.child(path).addValueEventListener( object: ValueEventListener {
+        databaseRef.child("$path/username").addValueEventListener( object: ValueEventListener {
 
               override fun onCancelled(p0: DatabaseError) {}
 
@@ -48,8 +48,7 @@ class Profile:Fragment() {
         })
 
         //單次監聽
-        path="User/$userId/email"
-        databaseRef.child(path).addListenerForSingleValueEvent(object: ValueEventListener {
+        databaseRef.child("$path/email").addListenerForSingleValueEvent(object: ValueEventListener {
 
             override fun onCancelled(p0: DatabaseError) {}
 
@@ -77,8 +76,7 @@ class Profile:Fragment() {
                         if(newUsername.text!!.isEmpty()) {
                             Snackbar.make(view!!, "名稱不得為空", Snackbar.LENGTH_SHORT).show()
                         }else{
-                            path="User/$userId/username"
-                            databaseRef.child(path).setValue(newUsername.text.toString())
+                            databaseRef.child("$path/username").setValue(newUsername.text.toString())
                             Snackbar.make(view!!, "更換名稱成功", Snackbar.LENGTH_SHORT).show()
                         }
                     }
@@ -126,6 +124,20 @@ class Profile:Fragment() {
         signOutButton.setOnClickListener {
             auth.signOut()
             startActivity(Intent(activity, MainActivity::class.java))
+        }
+
+        addGreenhouseButton.setOnClickListener{
+            databaseRef.child("$path/greenhouseNumber").addListenerForSingleValueEvent(object: ValueEventListener {
+
+                override fun onCancelled(p0: DatabaseError) {}
+
+                override fun onDataChange(p0: DataSnapshot) {
+                    var num : Int = p0.value.toString().toInt()
+                    num+=1
+                    databaseRef.child("$path/greenhouseNumber").setValue(num)
+                    Snackbar.make(view!!, "溫室數量:$num", Snackbar.LENGTH_SHORT).show()
+                }
+            })
         }
     }
 }

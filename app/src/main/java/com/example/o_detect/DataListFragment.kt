@@ -7,13 +7,10 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowId
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.view.*
+import android.widget.*
+import androidx.appcompat.widget.AppCompatSpinner
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
@@ -38,6 +35,7 @@ class DataListFragment :Fragment(){
     private lateinit var userId : String
     private lateinit var databaseRef : FirebaseDatabase
     private lateinit var recycleradpater :DataAdapter
+    private var greenhouseID = 1
 
 
     class DataAdapter : RecyclerView.Adapter<DataAdapter.ViewHolder>{
@@ -150,16 +148,8 @@ class DataListFragment :Fragment(){
         userId = auth.currentUser!!.uid
         databaseRef = FirebaseDatabase.getInstance()
 
-        //設定路徑
-        var path = "User/$userId/checkImageURL"
-        var dataSearch = databaseRef.reference
-
-        //取得資料大小
-        //var size = getDataCount(path,dataSearch)
-        dataArray = arrayOfNulls(5)
-
         //初始資料
-        initData(path,dataSearch)
+        initData()
 
         return view
     }
@@ -171,9 +161,9 @@ class DataListFragment :Fragment(){
         initView()
 
 
-        insertDataButton.setOnClickListener{
+       /* insertDataButton.setOnClickListener{
             Snackbar.make(view!!,"CLICK FLOATING", Snackbar.LENGTH_SHORT).show()
-        }
+        }*/
 
         //設定更新顏色
         refreshRecycle.setColorSchemeColors(ContextCompat.getColor(context!!,R.color.colorPrimary))
@@ -182,6 +172,38 @@ class DataListFragment :Fragment(){
             Snackbar.make(view!!,"下拉更新", Snackbar.LENGTH_SHORT).show()
             //完成載入後關閉
             refreshRecycle.isRefreshing= false
+        }
+
+        //取得greenhouse編號(從database取得溫室數量)
+        val spinner = activity!!.findViewById<androidx.appcompat.widget.AppCompatSpinner>(R.id.greenHouseDisplayList)
+        var spinnerList = arrayListOf("溫室1")
+
+        val path = "User/$userId/greenhouseNumber"
+        databaseRef.reference.child(path).addListenerForSingleValueEvent(object: ValueEventListener {
+
+            override fun onCancelled(p0: DatabaseError) {}
+
+            override fun onDataChange(p0: DataSnapshot) {
+                for( i in 2 .. p0.value.toString().toInt()){
+                    spinnerList.add("溫室$i")
+                }
+
+                Log.i("溫室數量",p0.value.toString())
+            }
+        })
+
+        val spinnerAdapter = ArrayAdapter(activity,R.layout.greenhouse_list,spinnerList)
+        spinnerAdapter.setDropDownViewResource(R.layout.greenhouse_list)
+        spinner.adapter = spinnerAdapter
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                greenhouseID = p2+1
+                initData()
+                initView()
+            }
+
         }
 
     }
@@ -199,8 +221,16 @@ class DataListFragment :Fragment(){
     }
 
     //初始化資料
-    private fun initData(path:String,dataSearch:DatabaseReference){
+    private fun initData(){
 
+        //設定路徑
+        val path = "Greenhouse/$userId/G$greenhouseID"
+        val dataSearch = databaseRef.reference
+
+        //取得資料大小
+        var size = getDataCount(path,dataSearch)
+        Log.i("dataSize=",size.toString())
+        dataArray = arrayOfNulls(10)
 
         dataSearch.child(path).addValueEventListener( object: ValueEventListener {
 
@@ -216,7 +246,7 @@ class DataListFragment :Fragment(){
                     it.children.forEach {
                         if(it.key=="result") {
                             data.result = it.value.toString()
-                        }else {
+                        }else if(it.key=="originURL"){
                             data.imageURL = it.value.toString()
                         }
                     }
@@ -258,5 +288,40 @@ class DataListFragment :Fragment(){
 
 
     }
+
+  /*  class SpinnerBehavior : CoordinatorLayout.Behavior<androidx.appcompat.widget.AppCompatSpinner>{
+
+        private var upReach: Boolean = false
+        private var downReach: Boolean = false
+        private var lastPosition = -1
+
+        constructor()
+
+        override fun onInterceptTouchEvent(
+            parent: CoordinatorLayout,
+            child: AppCompatSpinner,
+            ev: MotionEvent
+        ): Boolean {
+            when(ev.action){
+                MotionEvent.ACTION_DOWN ->{
+                    downReach = false
+                    upReach = false
+                }
+            }
+            return super.onInterceptTouchEvent(parent, child, ev)
+        }
+
+        override fun onNestedFling(
+            coordinatorLayout: CoordinatorLayout,
+            child: AppCompatSpinner,
+            target: View,
+            velocityX: Float,
+            velocityY: Float,
+            consumed: Boolean
+        ): Boolean {
+            super.onNestedFling(coordinatorLayout, child, target, velocityX, velocityY, consumed)
+
+        }
+    }*/
 
 }

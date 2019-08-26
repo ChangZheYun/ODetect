@@ -41,3 +41,13 @@
 2.優化"個別管理"點擊動畫
 3.使用AsyncTask抓取checkImageURL文字及圖片放入recyclerview
   (bug:還沒抓取完就載入recyclerview、動態控制陣列大小)
+
+[V1.1.0 / 2019.08.26]
+1.調整資料庫架構，新增溫室類別，移除checkImageURL
+  (註冊時預設溫室1，可於個人資料新增溫室數量)
+2.註冊、上傳圖片預設database路徑及storage路徑更新
+3."上傳圖片"新增spinner，可動態調整上傳路徑位置
+4."個別管理"新增spinner，可動態顯示各溫室內容
+5.上傳圖片時開啟新的thread發送包含辨識URL的socket給server
+  (三秒偵測server有沒有ACK，若沒有則重新request)
+6.(python)辨識後的圖片已可上傳至storage並將資訊同步於database

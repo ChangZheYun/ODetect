@@ -128,12 +128,13 @@ class SignUpFragment:Fragment() {
                                         //將註冊資料寫入firebase
                                         val databaseRef = FirebaseDatabase.getInstance().reference
                                         val userId : String = user.uid.toString()
-                                        var path = "User/$userId/email"
-                                        var userRef = databaseRef.child(path)
+                                        var path = "User/$userId"
+                                        var userRef = databaseRef.child("$path/email")
                                         userRef.setValue(user.email.toString())
-                                        path = "User/$userId/username"
-                                        userRef = databaseRef.child(path)
+                                        userRef = databaseRef.child("$path/username")
                                         userRef.setValue(upUsername.text.toString())
+                                        userRef = databaseRef.child("$path/greenhouseNumber")
+                                        userRef.setValue(1)
                                     }
                                     else{
 
