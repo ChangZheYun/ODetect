@@ -101,9 +101,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
 
     override fun onStop() {
         auth.removeAuthStateListener(authStateListener)

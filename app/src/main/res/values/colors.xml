@@ -16,6 +16,7 @@
     <color name="uploadButtonText">#1E90FF</color>
     <color name="uploadButtonNormal">#FFFFFF</color>
     <color name="uploadButtonPress">#008FA1</color>
+    <color name="background">#F5F5F5</color>
 
     <!--orange-->
     <color name="md_orange_50">#FFF3E0</color>

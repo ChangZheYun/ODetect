@@ -36,6 +36,7 @@ class DataListFragment :Fragment(){
     private lateinit var databaseRef : FirebaseDatabase
     private lateinit var recycleradpater :DataAdapter
     private var greenhouseID = 1
+    private var dataCount = 0
 
 
     class DataAdapter : RecyclerView.Adapter<DataAdapter.ViewHolder>{
@@ -53,7 +54,8 @@ class DataListFragment :Fragment(){
             val viewHolder = ViewHolder(cell)
             cell.layoutParams.height = 900
             viewHolder.image = cell.findViewById(R.id.dataItemImage)
-            viewHolder.result = cell.findViewById(R.id.dataItemTitle)
+            viewHolder.id = cell.findViewById(R.id.dataItemTitle)
+            viewHolder.result = cell.findViewById(R.id.dataItemResult)
             return viewHolder
         }
 
@@ -64,6 +66,7 @@ class DataListFragment :Fragment(){
         override fun onBindViewHolder(holder: DataAdapter.ViewHolder, position: Int) {
             //背景載入圖片
             ImageAsyncTask().execute(AsyncModel(holder.image,data[position]?.imageURL.toString()) )
+            holder.id.text = data[position]?.id.toString()
             holder.result.text = data[position]?.result.toString()
             Log.d("test---",holder.result.text.toString())
             /*holder.title.setOnClickListener{
@@ -79,15 +82,18 @@ class DataListFragment :Fragment(){
             }
 
             lateinit var image : ImageView
+            lateinit var id : TextView
             lateinit var result : TextView
         }
     }
 
     class DataModel {
         var imageURL : String
+        var id : String
         var result : String
-        constructor(imageURL:String,result:String){
+        constructor(imageURL:String,id:String,result:String){
             this.imageURL = imageURL
+            this.id = id
             this.result = result
         }
     }
@@ -120,6 +126,7 @@ class DataListFragment :Fragment(){
                 val url = URL(p0[0]?.URL)
                 bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream())
             }catch (e: Exception){
+                Log.w("抓不到圖片","QQ")
                 e.printStackTrace()
                 return null
             }
@@ -148,17 +155,17 @@ class DataListFragment :Fragment(){
         userId = auth.currentUser!!.uid
         databaseRef = FirebaseDatabase.getInstance()
 
-        //初始資料
-        initData()
-
         return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+
+        //初始資料
+        getDataCount()
         //初始View
-        initView()
+        //initView()
 
 
        /* insertDataButton.setOnClickListener{
@@ -169,9 +176,9 @@ class DataListFragment :Fragment(){
         refreshRecycle.setColorSchemeColors(ContextCompat.getColor(context!!,R.color.colorPrimary))
         //設定更新事件
         refreshRecycle.setOnRefreshListener {
+            getDataCount()
+            initView()
             Snackbar.make(view!!,"下拉更新", Snackbar.LENGTH_SHORT).show()
-            //完成載入後關閉
-            refreshRecycle.isRefreshing= false
         }
 
         //取得greenhouse編號(從database取得溫室數量)
@@ -200,37 +207,51 @@ class DataListFragment :Fragment(){
             override fun onNothingSelected(p0: AdapterView<*>?) {}
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 greenhouseID = p2+1
-                initData()
+                getDataCount()
                 initView()
+                //updateData()
             }
 
         }
 
     }
 
-    private fun getDataCount(path:String,dataSearch:DatabaseReference):Int{
-
-        var value = 0
-        dataSearch.child(path).addValueEventListener(object : ValueEventListener{
-            override fun onCancelled(p0: DatabaseError) {}
-            override fun onDataChange(p0: DataSnapshot) {
-                value = p0.childrenCount.toInt()
-            }
-        })
-        return value
-    }
-
     //初始化資料
-    private fun initData(){
+    private fun getDataCount(){
 
         //設定路徑
         val path = "Greenhouse/$userId/G$greenhouseID"
         val dataSearch = databaseRef.reference
 
+        if(dataCount==0){
+            dataArray = arrayOfNulls(1)
+            dataArray[0]=DataModel("Null","Null","無資料，馬上新增一筆吧!")
+            initView()
+        }
+
         //取得資料大小
-        var size = getDataCount(path,dataSearch)
-        Log.i("dataSize=",size.toString())
-        dataArray = arrayOfNulls(10)
+        dataSearch.child(path).addValueEventListener(object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {}
+            override fun onDataChange(p0: DataSnapshot) {
+                dataCount = p0.childrenCount.toInt()
+                Log.i("Count--",dataCount.toString())
+                dataArray = arrayOfNulls(dataCount)
+                if(dataCount==0){
+                    dataArray = arrayOfNulls(1)
+                    dataArray[0]=DataModel("Null","Null","無資料，馬上新增一筆吧!")
+                }
+                updateData()
+                //initView()
+            }
+        })
+
+
+    }
+
+    private fun updateData() {
+
+        val path = "Greenhouse/$userId/G$greenhouseID"
+        val dataSearch = databaseRef.reference
 
         dataSearch.child(path).addValueEventListener( object: ValueEventListener {
 
@@ -242,7 +263,7 @@ class DataListFragment :Fragment(){
                 p0.children.forEach{ it ->
                     //  val value = it.getValue(DataJSON::class.java)!!
                     //Log.d("TAG",it.value.toString())
-                    var data = DataModel("1","1")
+                    var data = DataModel("1","1", "1")
                     it.children.forEach {
                         if(it.key=="result") {
                             data.result = it.value.toString()
@@ -250,8 +271,10 @@ class DataListFragment :Fragment(){
                             data.imageURL = it.value.toString()
                         }
                     }
+                    Log.i("i=",i.toString())
+                    data.id = (i+1).toString()
                     dataArray[i] = data
-                    Log.d("DDD-dataArray-","${dataArray[i]?.imageURL} ${dataArray[i]?.result}")
+                    Log.d("DDD-dataArray-","${dataArray[i]!!.imageURL} ${dataArray[i]!!.result}")
                     i++
                 }
 
@@ -270,6 +293,8 @@ class DataListFragment :Fragment(){
     //設定RecycleView
     private fun initView(){
 
+        Log.i("陣列大小=",dataArray.size.toString())
+
         for( i in 0 until dataArray.size){
             Log.d("dataArray--","${dataArray[i]?.imageURL} ${dataArray[i]?.result}" )
         }
@@ -281,6 +306,10 @@ class DataListFragment :Fragment(){
         contentRecyclerView.layoutManager = layoutManager
         contentRecyclerView.adapter = recycleradpater
 
+
+
+        //完成載入後關閉
+        refreshRecycle.isRefreshing= false
 
         //設定layoutManage
        /* contentRecyclerView.layoutManager = layoutManager*/

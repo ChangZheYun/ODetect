@@ -6,9 +6,6 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
 import com.example.o_detect.ui.login.LoginActivity
@@ -16,17 +13,23 @@ import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.util.Linkify
-import android.view.KeyEvent
+import android.util.DisplayMetrics
+import android.view.*
+import android.view.animation.AccelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import com.google.firebase.auth.FirebaseUser
 import androidx.annotation.NonNull
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat.getSystemService
 import com.dd.CircularProgressButton
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.material.circularreveal.CircularRevealWidget
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.*
 import com.google.firebase.auth.AuthResult
+import kotlinx.android.synthetic.main.content_display.*
 import kotlinx.android.synthetic.main.title_signin.*
 import java.lang.Exception
 
@@ -128,7 +131,7 @@ class SignInFragment : Fragment() {
                         val user = auth.currentUser
                         if (task.isSuccessful && user!!.isEmailVerified) {    //user.isEmailVerified要先通過信箱驗證
                             Log.d(TAG, "signInWithEmail:Success")
-                            startActivity(Intent(activity,Content::class.java))
+                            getXYAnimation(it)
                         }else if(!task.isSuccessful){
                             Log.w(TAG, "signInWithEmail:failure", task.exception)
                             val warning = Snackbar.make(view!!, "帳號密碼錯誤", Snackbar.LENGTH_SHORT)
@@ -147,5 +150,24 @@ class SignInFragment : Fragment() {
             }
         }
 
+    }
+
+    private fun getXYAnimation(it:View){
+        val location = IntArray(2)
+
+        //取得fab的x, y座標
+        it.getLocationOnScreen(location)
+        val revealX = location[0]
+        val revealY = location[1]
+
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity!!, it, "Transition")
+
+        //傳入fab的x, y座標
+        val intent = Intent(activity!!, Content::class.java)
+        intent.putExtra(Content.ARG_CIRCULAR_REVEAL_X, revealX)
+        intent.putExtra(Content.ARG_CIRCULAR_REVEAL_Y, revealY)
+
+        ActivityCompat.startActivity(activity!!, intent, options.toBundle())
+        //startActivity(Intent(activity,Content::class.java))
     }
 }

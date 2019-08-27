@@ -51,3 +51,9 @@
 5.上傳圖片時開啟新的thread發送包含辨識URL的socket給server
   (三秒偵測server有沒有ACK，若沒有則重新request)
 6.(python)辨識後的圖片已可上傳至storage並將資訊同步於database
+
+[V1.1.1 / 2019.08.27]
+1.修正recyclerview介面超出問題(暫時改為Linearlayout)
+2.可動態控制"個人資料"陣列大小
+3.新增登入時的Reveal動畫，修改背景顏色
+4.解決上傳圖片會閃退

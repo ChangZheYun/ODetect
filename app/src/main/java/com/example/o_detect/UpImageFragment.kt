@@ -77,6 +77,8 @@ class UpImageFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        greenHouseList.visibility = View.VISIBLE
+
         openAlbum = activity!!.findViewById(R.id.uploadImageButton)
         progressBar = activity!!.findViewById(R.id.uploadImageProgress)
         storageFirebase = FirebaseStorage.getInstance()
