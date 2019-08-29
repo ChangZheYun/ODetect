@@ -27,8 +27,12 @@
     <string name="cancel">取消</string>
 
     <!--上傳圖片進度-->
-    <string name="hint1">上傳資料庫中...</string>
+    <string name="hint1">上傳資料庫中&#8230;</string>
     <string name="hint2">上傳資料庫完成</string>
-    <string name="hint3">辨識圖片中...</string>
-    <string name="hint4">辨識完成</string>
+    <string name="hint3">發送封包中&#8230;</string>
+    <string name="hint4">辨識圖片中&#8230;</string>
+    <string name="hint5">辨識完成</string>
+
+    <!--uploadImage-->
+    <string name="prompt_plant_name">輸入蘭花名稱</string>
 </resources>

@@ -7,6 +7,7 @@ Created on Thu Aug 22 22:45:02 2019
 
 import socket
 import threading
+import time
 
 #thread函數
 def job():
@@ -19,14 +20,14 @@ def job():
          # 傳送資料給客戶端告訴他接收到了
          connect.sendall(b'1')
          print(b'the client say:' + data)
-         sleep(500)
+         time.sleep(5)
+         connect.sendall(b'2')
       except:
          print(str(clientThread.getName())+" 斷線")
          connect.close()
          listener -= 1
          break
    
-
 
 
 # 建立一個socket套接字，該套接字還沒有建立連線

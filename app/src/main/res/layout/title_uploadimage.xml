@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/titleUploadImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:focusable="true"
         android:focusableInTouchMode="true">
 
@@ -77,14 +76,41 @@
 
             <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/greenHouseList"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:spinnerMode="dropdown"
+                    app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintTop_toBottomOf="@id/uploadImageButton"
                     app:layout_constraintStart_toStartOf="@id/uploadImageBlock"
+                    app:layout_constraintEnd_toStartOf="@id/plantNameTextLayout"
+                    android:layout_marginTop="55dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/plantNameTextLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_plant_name"
+                    app:errorEnabled="true"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="10"
+                    android:background="@color/background"
+                    app:layout_constraintHorizontal_weight="2"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    app:layout_constraintTop_toBottomOf="@id/uploadImageButton"
+                    app:layout_constraintStart_toEndOf="@+id/greenHouseList"
                     app:layout_constraintEnd_toEndOf="@id/uploadImageBlock"
-                    android:layout_marginTop="10dp"
-                    android:visibility="invisible"/>
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="30dp">
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/plantNameText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:maxLength="10"
+                        android:selectAllOnFocus="true">
+                </com.google.android.material.textfield.TextInputEditText>
+            </com.google.android.material.textfield.TextInputLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -93,9 +119,8 @@
                     android:id="@+id/insertImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@id/uploadImageBlock"
-                    app:layout_constraintEnd_toEndOf="@id/uploadImageBlock"
                     android:layout_margin="16dp"
+                    android:layout_gravity="bottom|end"
                     app:srcCompat="@drawable/photo"
                     app:maxImageSize="32dp"
                     style="@style/loginButton">
@@ -104,4 +129,4 @@
 
     </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

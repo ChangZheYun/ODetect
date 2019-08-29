@@ -1,7 +1,6 @@
 package com.example.o_detect
 
 import android.content.pm.PackageManager
-import android.os.Bundle
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -15,9 +14,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.AsyncTask
-import android.os.Build
-import android.os.Environment
+import android.os.*
 import android.provider.MediaStore
 import android.renderscript.Sampler
 import android.text.format.DateUtils
@@ -25,15 +22,15 @@ import android.util.Log
 import android.view.*
 import androidx.annotation.NonNull
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.core.widget.ContentLoadingProgressBar
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.title_uploadimage.*
@@ -64,7 +61,10 @@ class UpImageFragment : Fragment() {
     private lateinit var hintText : TextView
     private lateinit var progressBar : ContentLoadingProgressBar
     private lateinit var storageFirebase :FirebaseStorage
+    private lateinit var plantName : TextInputEditText
+    private lateinit var setImageHandler : Handler
     private var greenhouseID = 1
+    private var packetStatus = 0
 
     companion object{
         private const val PHOTO_FROM_GALLERY = 1
@@ -78,15 +78,18 @@ class UpImageFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        greenHouseList.visibility = View.VISIBLE
-
         openAlbum = activity!!.findViewById(R.id.uploadImageButton)
         hintText = activity!!.findViewById(R.id.hintImageProgressText)
         progressBar = activity!!.findViewById(R.id.uploadImageProgress)
         storageFirebase = FirebaseStorage.getInstance()
+        plantName = activity!!.findViewById(R.id.plantNameText)
 
         openAlbum.setOnClickListener{
-            onGallery()
+            if(plantName.text!!.isNotEmpty()) {
+                onGallery()
+            }else{
+                Snackbar.make(view!!,"請輸入蘭花名稱",Snackbar.LENGTH_SHORT).show()
+            }
         }
 
         insertImageButton.setOnClickListener{
@@ -128,6 +131,20 @@ class UpImageFragment : Fragment() {
 
         }
 
+        setImageHandler = object : Handler(){
+            override fun handleMessage(msg: Message?) {
+                super.handleMessage(msg)
+                if(packetStatus == 1){
+                    hintText.text = resources.getString(R.string.hint4)
+                }else if(packetStatus == 2){
+                    hintText.text = resources.getString(R.string.hint5)
+                    hintText.visibility = View.INVISIBLE
+                    progressBar.visibility = View.INVISIBLE
+                    imageView.visibility = View.VISIBLE
+                }
+            }
+        }
+
     }
 
     object DateUtils {
@@ -144,28 +161,36 @@ class UpImageFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        //設定上傳進度(progress)
-        greenHouseList.visibility = View.INVISIBLE
-        hintText.visibility = View.VISIBLE
-        progressBar.visibility = View.VISIBLE
-        hintText.text = resources.getString(R.string.hint1)
-
         when(requestCode){
             PHOTO_FROM_GALLERY -> {
                 when(resultCode){
                     Activity.RESULT_OK ->{
 
+                        //設定上傳進度(progress)
+                        greenHouseList.visibility = View.INVISIBLE
+                        plantNameTextLayout.visibility = View.INVISIBLE
+                        hintText.visibility = View.VISIBLE
+                        progressBar.visibility = View.VISIBLE
+                        hintText.text = resources.getString(R.string.hint1)
+
                         openAlbum.visibility = View.INVISIBLE
                         imageView.visibility = View.INVISIBLE
+
 
                         val url = data!!.data
                         val userId = FirebaseAuth.getInstance().currentUser?.uid.toString()
 
-                        //設定圖片名稱(當前時間)
-                        val imageName = DateUtils.formatDate(Date(), "yyyyMMdd-HH:mm:ss")
+                        //設定日期及時間
+                        val date = DateUtils.formatDate(Date(), "yyyyMMdd")
+                        val timestamp = DateUtils.formatDate(Date(), "yyyyMMdd-HH:mm:ss")
+                        //設定圖片名稱
+                        val imageName = activity!!.findViewById<TextInputEditText>(R.id.plantNameText).text.toString()
+                        //設定病歷key
+                        val databaseRef = FirebaseDatabase.getInstance().reference
+                        val key = databaseRef.push().key
                         //設定上傳Ref
                         val userUploadImageRef = storageFirebase.reference
-                            .child("$userId/G$greenhouseID/originImage/$imageName.jpg")
+                            .child("$userId/G$greenhouseID/$date/originImage/$key.jpg")
                         val userUploadImage = userUploadImageRef.putFile(url!!)
                         //取得DownloadURL
                         userUploadImage.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>>{ task->
@@ -176,24 +201,49 @@ class UpImageFragment : Fragment() {
                             }
                             return@Continuation userUploadImageRef.downloadUrl
                         }).addOnCompleteListener { task ->
-                            var path = "Greenhouse/$userId/G$greenhouseID/$imageName"
                             if(task.isSuccessful){
-                                val databaseRef = FirebaseDatabase.getInstance().reference
 
-                              /*  databaseRef.addListenerForSingleValueEvent( object:ValueEventListener{
+                                //將病歷寫入資料庫
+                                var path = "Record/$userId/G$greenhouseID/$date"
+                                databaseRef.child("$path/$key/imageName").setValue(imageName)
+                                databaseRef.child("$path/$key/originURL").setValue(task.result.toString()) //task.result取得downloadURL
+                                databaseRef.child("$path/$key/detectURL").setValue("Null")
+                                databaseRef.child("$path/$key/result").setValue("Null")
+                                databaseRef.child("$path/$key/timestamp").setValue(timestamp)
 
-                                    override fun onCancelled(p0: DatabaseError) {}
+                                //同步病歷index給Plant
+                                path = "Plant/$userId/G$greenhouseID/$imageName/$timestamp"
+                                databaseRef.child(path).setValue(key.toString())
 
-                                    override fun onDataChange(p0: DataSnapshot) {
-                                        //var i = listOf(p0.value).size
-                                        checkImageURL.add(p0.value.toString())
-                                        for(i in 0 until checkImageURL.size)
-                                            Log.d("TEST-data",checkImageURL[i])
+                                //同步MataData
+                                path = "MataData/$userId/G$greenhouseID/housePlantSum"
+                                databaseRef.child(path).runTransaction( object : Transaction.Handler{
+                                    override fun doTransaction(p0: MutableData): Transaction.Result {
+                                        var value = 0
+                                        if( p0.value == null )
+                                            value = 1
+                                        else
+                                            value = p0.value.toString().toInt()+1
+                                        p0.value = value
+                                        return Transaction.success(p0)
                                     }
-                                })*/
-                                databaseRef.child("$path/originURL").setValue(task.result.toString()) //task.result取得downloadURL
-                                databaseRef.child("$path/detectURL").setValue("Null")
-                                databaseRef.child("$path/result").setValue("Null")
+                                    override fun onComplete(p0: DatabaseError?, p1: Boolean, p2: DataSnapshot?) {}
+                                })
+
+                                path = "MataData/$userId/plantSum"
+                                databaseRef.child(path).runTransaction( object : Transaction.Handler{
+                                    override fun doTransaction(p0: MutableData): Transaction.Result {
+                                        var value = 0
+                                        if( p0.value == null )
+                                            value = 1
+                                        else
+                                            value = p0.value.toString().toInt()+1
+                                        p0.value = value
+                                        return Transaction.success(p0)
+                                    }
+                                    override fun onComplete(p0: DatabaseError?, p1: Boolean, p2: DataSnapshot?) {}
+                                })
+
                                 //傳送socket
                                 hintText.text = resources.getString(R.string.hint3)
                                 PacketAsyncTask().execute(PacketModel(task.result.toString(),path))
@@ -232,7 +282,7 @@ class UpImageFragment : Fragment() {
         }
     }
 
-    class PacketAsyncTask : AsyncTask<PacketModel, Int, Int>() {
+    inner class PacketAsyncTask : AsyncTask<PacketModel, Int, Int>() {
 
         override fun doInBackground(vararg p0: PacketModel?): Int {
             val host = "120.113.173.82"
@@ -255,11 +305,10 @@ class UpImageFragment : Fragment() {
         }
 
         //客戶端
-        class  ClientSocket (host: String, port: Int ) :Socket(host,port){
+        inner class  ClientSocket (host: String, port: Int ) :Socket(host,port){
 
             var reader = BufferedReader(InputStreamReader(inputStream))
             var writer = PrintWriter(outputStream, true)
-            var status = 0
 
             fun update(data : PacketModel) {
 
@@ -269,8 +318,11 @@ class UpImageFragment : Fragment() {
                 val timer = Timer()
                 timer.schedule(object : TimerTask(){
                     override fun run() {
-                        status = clientRead.getSatus()
-                        if(status == 1){
+                        if(packetStatus == 1){
+                            setImageHandler.sendEmptyMessage(0)
+                            Log.i("[Socket]","Server get request")
+                        }else if(packetStatus == 2){
+                            setImageHandler.sendEmptyMessage(0)
                             timer.cancel()
                             timer.purge()
                             Log.i("[Socket]","Closed")
@@ -288,9 +340,7 @@ class UpImageFragment : Fragment() {
         }
 
         //開啟一個線程從服務器讀取數據
-        class ReadHandler(var reader: BufferedReader) : Thread() {
-
-            private var status = 0
+        inner class ReadHandler(var reader: BufferedReader) : Thread() {
 
             fun build(): ReadHandler {
                 start()
@@ -304,15 +354,14 @@ class UpImageFragment : Fragment() {
                     //向控制台寫入
                     //print(line)
                     if(line == '1') {
-                        status = 1
+                        packetStatus = 1
+                    }else if(line == '2'){
+                        packetStatus = 2
                         break
                     }
                 }
             }
 
-            fun getSatus():Int{
-                return status
-            }
         }
     }
 

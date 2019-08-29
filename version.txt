@@ -66,3 +66,9 @@
 1.新增"農場概況"圖表(資料未綁定)
 2.更改上傳圖片中的提示字及進度(辨識完成還沒放)
 3.資料庫新增MataData(存放圖表所需資料)
+
+[V1.1.4 / 2019.08.30]
+1.修正資料庫架構、程式Link，新增病歷、輸入植物名稱
+  (python UploadImageToFirebase待改)
+2.server回傳1代表收到request，回傳2代表辨識完成
+  (新增handler，在Thread處理UI物件)

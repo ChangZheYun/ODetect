@@ -102,12 +102,12 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    override fun onStop() {
+   /* override fun onStop() {
         auth.removeAuthStateListener(authStateListener)
         super.onStop()
-    }
+    }*/
 
-    /*override fun onDestroy() {
+   /* override fun onDestroy() {
         auth.signOut()
         super.onDestroy()
     }*/

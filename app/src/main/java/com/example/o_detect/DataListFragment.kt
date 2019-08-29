@@ -40,6 +40,7 @@ class DataListFragment :Fragment(){
     private lateinit var recycleradpater :DataAdapter
     private var greenhouseID = 1
     private var dataCount = 0
+    private val date = UpImageFragment.DateUtils.formatDate(Date(), "yyyyMMdd")
 
 
     class DataAdapter : RecyclerView.Adapter<DataAdapter.ViewHolder>{
@@ -228,7 +229,7 @@ class DataListFragment :Fragment(){
     private fun getDataCount(){
 
         //設定路徑
-        val path = "Greenhouse/$userId/G$greenhouseID"
+        val path = "Record/$userId/G$greenhouseID/$date"
         val dataSearch = databaseRef.reference
 
         if(dataCount==0){
@@ -258,7 +259,7 @@ class DataListFragment :Fragment(){
 
     private fun updateData() {
 
-        val path = "Greenhouse/$userId/G$greenhouseID"
+        val path = "Record/$userId/G$greenhouseID/$date"
         val dataSearch = databaseRef.reference
 
         dataSearch.child(path).addValueEventListener( object: ValueEventListener {
@@ -272,17 +273,18 @@ class DataListFragment :Fragment(){
                     //  val value = it.getValue(DataJSON::class.java)!!
                     //Log.d("TAG",it.value.toString())
                     var data = DataModel("1","1","1", "1")
-                    data.imageName = it.key.toString()
-                    Log.i("data-imageName:",data.imageName)
+                    data.id = it.key.toString()
+                    Log.i("data-imageName:",data.id)
                     it.children.forEach {
-                        if(it.key=="result") {
+                        if(it.key=="imageName"){
+                            data.imageName = it.value.toString()
+                        }else if(it.key=="result") {
                             data.result = it.value.toString()
                         }else if(it.key=="originURL"){
                             data.imageURL = it.value.toString()
                         }
                     }
                     Log.i("i=",i.toString())
-                    data.id = (i+1).toString()
                     dataArray[i] = data
                     Log.d("DDD-dataArray-","${dataArray[i]!!.imageURL} ${dataArray[i]!!.result}")
                     i++
@@ -359,12 +361,13 @@ class DataListFragment :Fragment(){
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val position = viewHolder.adapterPosition
-            databaseRef.reference.child( "Greenhouse/$userId/G$greenhouseID/${dataArray[position]!!.imageName}").removeValue()
-            storageRef.reference.child("$userId/G$greenhouseID/originImage/${dataArray[position]!!.imageName}.jpg").delete()
+            databaseRef.reference.child( "Record/$userId/G$greenhouseID/$date/${dataArray[position]!!.id}").removeValue()
+            databaseRef.reference.child( "Plant/$userId/G$greenhouseID/${dataArray[position]!!.imageName}").removeValue()
+            storageRef.reference.child("$userId/G$greenhouseID/$date/originImage/${dataArray[position]!!.id}.jpg").delete()
             //結果圖還沒刪除
             recycleradpater.notifyItemRemoved(position)
-            getDataCount()
-            initView()
+            //getDataCount()
+            //initView()
         }
     }
   /*  class SpinnerBehavior : CoordinatorLayout.Behavior<androidx.appcompat.widget.AppCompatSpinner>{

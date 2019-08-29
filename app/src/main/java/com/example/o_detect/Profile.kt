@@ -127,15 +127,18 @@ class Profile:Fragment() {
         }
 
         addGreenhouseButton.setOnClickListener{
-            path = "MataData/$userId/houseSum"
-            databaseRef.child(path).addListenerForSingleValueEvent(object: ValueEventListener {
+            path = "MataData/$userId"
+            databaseRef.child("$path/houseSum").addListenerForSingleValueEvent(object: ValueEventListener {
 
                 override fun onCancelled(p0: DatabaseError) {}
 
                 override fun onDataChange(p0: DataSnapshot) {
                     var num : Int = p0.value.toString().toInt()
                     num+=1
-                    databaseRef.child(path).setValue(num)
+                    databaseRef.child("$path/houseSum").setValue(num)
+                    databaseRef.child("$path/G$num/health").setValue(num)
+                    databaseRef.child("$path/G$num/unhealth").setValue(num)
+                    databaseRef.child("$path/G$num/housePlantSum").setValue(num)
                     Snackbar.make(view!!, "溫室數量:$num", Snackbar.LENGTH_SHORT).show()
                 }
             })

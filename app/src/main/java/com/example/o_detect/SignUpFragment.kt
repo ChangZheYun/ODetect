@@ -133,9 +133,15 @@ class SignUpFragment:Fragment() {
                                         userRef.setValue(user.email.toString())
                                         userRef = databaseRef.child("$path/username")
                                         userRef.setValue(upUsername.text.toString())
-                                        //設定溫室數量
-                                        path = "MataData/$userId/houseSum"
-                                        databaseRef.child(path).setValue(1)
+                                        //設定預設資料
+                                        path = "MataData/$userId"
+                                        databaseRef.child("$path/healthSum").setValue(0)
+                                        databaseRef.child("$path/unhealthSum").setValue(0)
+                                        databaseRef.child("$path/plantSum").setValue(0)
+                                        databaseRef.child("$path/houseSum").setValue(1)
+                                        databaseRef.child("$path/G1/health").setValue(0)
+                                        databaseRef.child("$path/G1/unhealth").setValue(0)
+                                        databaseRef.child("$path/G1/housePlantSum").setValue(0)
                                     }
                                     else{
 
