@@ -28,6 +28,16 @@
                     android:layout_marginBottom="20dp"
                     android:visibility="invisible"/>
 
+            <TextView
+                    android:id="@+id/hintImageProgressText"
+                    android:layout_width="250dp"
+                    android:layout_height="20dp"
+                    app:layout_constraintBottom_toTopOf="@id/uploadImageProgress"
+                    app:layout_constraintStart_toStartOf="@+id/uploadImageBlock"
+                    app:layout_constraintEnd_toEndOf="@+id/uploadImageBlock"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="invisible"/>
+
             <androidx.core.widget.ContentLoadingProgressBar
                     android:id="@+id/uploadImageProgress"
                     android:layout_width="250dp"
@@ -38,7 +48,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/greenHouseList"
                     app:layout_constraintStart_toStartOf="@+id/uploadImageBlock"
                     app:layout_constraintEnd_toEndOf="@+id/uploadImageBlock"
-                    android:layout_marginBottom="35dp"
+                    android:layout_marginBottom="25dp"
                     android:visibility="invisible"/>
                     <!--
                     android:progress="0"

@@ -61,6 +61,7 @@ import kotlin.system.exitProcess
 class UpImageFragment : Fragment() {
 
     private lateinit var openAlbum : Button
+    private lateinit var hintText : TextView
     private lateinit var progressBar : ContentLoadingProgressBar
     private lateinit var storageFirebase :FirebaseStorage
     private var greenhouseID = 1
@@ -80,6 +81,7 @@ class UpImageFragment : Fragment() {
         greenHouseList.visibility = View.VISIBLE
 
         openAlbum = activity!!.findViewById(R.id.uploadImageButton)
+        hintText = activity!!.findViewById(R.id.hintImageProgressText)
         progressBar = activity!!.findViewById(R.id.uploadImageProgress)
         storageFirebase = FirebaseStorage.getInstance()
 
@@ -97,15 +99,17 @@ class UpImageFragment : Fragment() {
 
         val auth = FirebaseAuth.getInstance()
         val userId = auth.currentUser!!.uid
-        val path = "User/$userId/greenhouseNumber"
+        val path = "MataData/$userId/houseSum"
         val databaseRef = FirebaseDatabase.getInstance().reference
         databaseRef.child(path).addListenerForSingleValueEvent(object: ValueEventListener {
 
             override fun onCancelled(p0: DatabaseError) {}
 
             override fun onDataChange(p0: DataSnapshot) {
-                for( i in 2 .. p0.value.toString().toInt()){
-                    spinnerList.add("溫室$i")
+                if(p0.value.toString().toInt() >= 2) {
+                    for (i in 2..p0.value.toString().toInt()) {
+                        spinnerList.add("溫室$i")
+                    }
                 }
 
                 Log.i("溫室數量",p0.value.toString())
@@ -139,6 +143,12 @@ class UpImageFragment : Fragment() {
     //從相簿回來
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
+        //設定上傳進度(progress)
+        greenHouseList.visibility = View.INVISIBLE
+        hintText.visibility = View.VISIBLE
+        progressBar.visibility = View.VISIBLE
+        hintText.text = resources.getString(R.string.hint1)
 
         when(requestCode){
             PHOTO_FROM_GALLERY -> {
@@ -184,8 +194,8 @@ class UpImageFragment : Fragment() {
                                 databaseRef.child("$path/originURL").setValue(task.result.toString()) //task.result取得downloadURL
                                 databaseRef.child("$path/detectURL").setValue("Null")
                                 databaseRef.child("$path/result").setValue("Null")
-                                Toast.makeText(activity,"照片上傳成功,URL=${task.result}",Toast.LENGTH_SHORT).show()
                                 //傳送socket
+                                hintText.text = resources.getString(R.string.hint3)
                                 PacketAsyncTask().execute(PacketModel(task.result.toString(),path))
                             }
 
@@ -193,14 +203,14 @@ class UpImageFragment : Fragment() {
                         //取得上傳進度
                         userUploadImage.addOnProgressListener { task ->
                             val progress = (100.0 * task.bytesTransferred) / task.totalByteCount
-                            progressBar.visibility = View.VISIBLE
                             progressBar.progress = progress.toInt()
                            // Log.d("UPLOAD--","Upload is $progress% done")
                             if(progress>=100){
+                                hintText.text = resources.getString(R.string.hint2)
                                 //顯示圖片
-                                progressBar.visibility = View.INVISIBLE
-                                imageView.visibility = View.VISIBLE
-                                imageView.setImageURI(url)
+                                //progressBar.visibility = View.INVISIBLE
+                                //imageView.visibility = View.VISIBLE
+                                //imageView.setImageURI(url)
                             }
                         }
                     }

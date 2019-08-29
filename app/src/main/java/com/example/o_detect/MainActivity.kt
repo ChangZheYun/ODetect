@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
     }
 
-  /*  override fun onDestroy() {
+    /*override fun onDestroy() {
         auth.signOut()
         super.onDestroy()
     }*/

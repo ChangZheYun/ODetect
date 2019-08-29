@@ -25,4 +25,10 @@
     <!--Dialog-->
     <string name="confirm">確認</string>
     <string name="cancel">取消</string>
+
+    <!--上傳圖片進度-->
+    <string name="hint1">上傳資料庫中...</string>
+    <string name="hint2">上傳資料庫完成</string>
+    <string name="hint3">辨識圖片中...</string>
+    <string name="hint4">辨識完成</string>
 </resources>

@@ -191,14 +191,16 @@ class DataListFragment :Fragment(){
         val spinner = activity!!.findViewById<androidx.appcompat.widget.AppCompatSpinner>(R.id.greenHouseDisplayList)
         var spinnerList = arrayListOf("溫室1")
 
-        val path = "User/$userId/greenhouseNumber"
+        val path = "MataData/$userId/houseSum"
         databaseRef.reference.child(path).addListenerForSingleValueEvent(object: ValueEventListener {
 
             override fun onCancelled(p0: DatabaseError) {}
 
             override fun onDataChange(p0: DataSnapshot) {
-                for( i in 2 .. p0.value.toString().toInt()){
-                    spinnerList.add("溫室$i")
+                if(p0.value.toString().toInt() >= 2) {
+                    for (i in 2..p0.value.toString().toInt()) {
+                        spinnerList.add("溫室$i")
+                    }
                 }
 
                 Log.i("溫室數量",p0.value.toString())

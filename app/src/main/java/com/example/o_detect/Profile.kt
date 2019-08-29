@@ -34,7 +34,7 @@ class Profile:Fragment() {
 
         val auth = FirebaseAuth.getInstance()
         val userId = auth.currentUser!!.uid
-        val path = "User/$userId"
+        var path = "User/$userId"
         val databaseRef = FirebaseDatabase.getInstance().reference
 
         //持續監聽
@@ -127,14 +127,15 @@ class Profile:Fragment() {
         }
 
         addGreenhouseButton.setOnClickListener{
-            databaseRef.child("$path/greenhouseNumber").addListenerForSingleValueEvent(object: ValueEventListener {
+            path = "MataData/$userId/houseSum"
+            databaseRef.child(path).addListenerForSingleValueEvent(object: ValueEventListener {
 
                 override fun onCancelled(p0: DatabaseError) {}
 
                 override fun onDataChange(p0: DataSnapshot) {
                     var num : Int = p0.value.toString().toInt()
                     num+=1
-                    databaseRef.child("$path/greenhouseNumber").setValue(num)
+                    databaseRef.child(path).setValue(num)
                     Snackbar.make(view!!, "溫室數量:$num", Snackbar.LENGTH_SHORT).show()
                 }
             })
