@@ -1,5 +1,6 @@
 package com.example.o_detect
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -27,6 +28,8 @@ import kotlinx.android.synthetic.main.title_datalist.*
 import java.lang.Exception
 import java.lang.Thread.sleep
 import java.net.URL
+import java.text.DateFormatSymbols
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.absoluteValue
 
@@ -40,7 +43,7 @@ class DataListFragment :Fragment(){
     private lateinit var recycleradpater :DataAdapter
     private var greenhouseID = 1
     private var dataCount = 0
-    private val date = UpImageFragment.DateUtils.formatDate(Date(), "yyyyMMdd")
+    private var date = UpImageFragment.DateUtils.formatDate(Date(), "yyyyMMdd")
 
 
     class DataAdapter : RecyclerView.Adapter<DataAdapter.ViewHolder>{
@@ -189,10 +192,10 @@ class DataListFragment :Fragment(){
         }
 
         //取得greenhouse編號(從database取得溫室數量)
-        val spinner = activity!!.findViewById<androidx.appcompat.widget.AppCompatSpinner>(R.id.greenHouseDisplayList)
-        var spinnerList = arrayListOf("溫室1")
+        val houseSpinner = activity!!.findViewById<AppCompatSpinner>(R.id.greenHouseDisplayList)
+        var houseSpinnerList = arrayListOf("溫室1")
 
-        val path = "MataData/$userId/houseSum"
+        var path = "MataData/$userId/houseSum"
         databaseRef.reference.child(path).addListenerForSingleValueEvent(object: ValueEventListener {
 
             override fun onCancelled(p0: DatabaseError) {}
@@ -200,7 +203,7 @@ class DataListFragment :Fragment(){
             override fun onDataChange(p0: DataSnapshot) {
                 if(p0.value.toString().toInt() >= 2) {
                     for (i in 2..p0.value.toString().toInt()) {
-                        spinnerList.add("溫室$i")
+                        houseSpinnerList.add("溫室$i")
                     }
                 }
 
@@ -208,10 +211,10 @@ class DataListFragment :Fragment(){
             }
         })
 
-        val spinnerAdapter = ArrayAdapter(activity,R.layout.greenhouse_list,spinnerList)
-        spinnerAdapter.setDropDownViewResource(R.layout.greenhouse_list)
-        spinner.adapter = spinnerAdapter
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        var houseSpinnerAdapter = ArrayAdapter(activity!!,R.layout.greenhouse_list,houseSpinnerList)
+        houseSpinnerAdapter.setDropDownViewResource(R.layout.greenhouse_list)
+        houseSpinner.adapter = houseSpinnerAdapter
+        houseSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
 
             override fun onNothingSelected(p0: AdapterView<*>?) {}
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
@@ -223,6 +226,38 @@ class DataListFragment :Fragment(){
 
         }
 
+        //設定檢視日期
+        val dateList = activity!!.findViewById<TextView>(R.id.dateList)
+        val cal = Calendar.getInstance()
+        val year = cal.get(Calendar.YEAR)
+        val month = cal.get(Calendar.MONTH)
+        val day = cal.get(Calendar.DAY_OF_MONTH)
+        //預設為當天
+        dateList.text = date
+
+        dateList.setOnClickListener {
+            DatePickerDialog(activity!!, DatePickerDialog.OnDateSetListener { _, Year, Month, Day ->
+                    // Display Selected date in textbox
+
+                cal.set(Calendar.YEAR,Year)
+                cal.set(Calendar.MONTH,Month)
+                cal.set(Calendar.DATE,Day)
+
+                dateList.text = SimpleDateFormat("yyyyMMdd",Locale.TAIWAN).format(cal.time)
+                dateList.textSize = 16f
+
+                //path = "Record/$userId/G$greenhouseID/${dateList.text}"
+                date = dateList.text.toString()
+                for( i in 0..20){
+                    Log.i("日期---",date)}
+                getDataCount()
+                initView()
+
+            }, year, month, day).show()
+
+        }
+
+
     }
 
     //初始化資料
@@ -232,14 +267,15 @@ class DataListFragment :Fragment(){
         val path = "Record/$userId/G$greenhouseID/$date"
         val dataSearch = databaseRef.reference
 
+        Log.i("日期---",date)
         if(dataCount==0){
             dataArray = arrayOfNulls(1)
-            dataArray[0]=DataModel("Null","Null","Null","無資料，馬上新增一筆吧!")
+            dataArray[0]=DataModel("","","","無資料，馬上新增一筆吧!")
             initView()
         }
 
         //取得資料大小
-        dataSearch.child(path).addValueEventListener(object : ValueEventListener{
+        dataSearch.child(path).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {}
             override fun onDataChange(p0: DataSnapshot) {
                 dataCount = p0.childrenCount.toInt()
@@ -247,7 +283,7 @@ class DataListFragment :Fragment(){
                 dataArray = arrayOfNulls(dataCount)
                 if(dataCount==0){
                     dataArray = arrayOfNulls(1)
-                    dataArray[0]=DataModel("Null","Null","Null","無資料，馬上新增一筆吧!")
+                    dataArray[0]=DataModel("","","","無資料，馬上新增一筆吧!")
                 }
                 updateData()
                 //initView()
@@ -262,7 +298,7 @@ class DataListFragment :Fragment(){
         val path = "Record/$userId/G$greenhouseID/$date"
         val dataSearch = databaseRef.reference
 
-        dataSearch.child(path).addValueEventListener( object: ValueEventListener {
+        dataSearch.child(path).addListenerForSingleValueEvent( object: ValueEventListener {
 
             override fun onCancelled(p0: DatabaseError) {}
 
@@ -366,8 +402,8 @@ class DataListFragment :Fragment(){
             storageRef.reference.child("$userId/G$greenhouseID/$date/originImage/${dataArray[position]!!.id}.jpg").delete()
             //結果圖還沒刪除
             recycleradpater.notifyItemRemoved(position)
-            //getDataCount()
-            //initView()
+            getDataCount()
+            initView()
         }
     }
   /*  class SpinnerBehavior : CoordinatorLayout.Behavior<androidx.appcompat.widget.AppCompatSpinner>{

@@ -57,3 +57,6 @@
    (python UploadImageToFirebase待改)
 2. server回傳1代表收到request，回傳2代表辨識完成
    (新增handler，在Thread處理UI物件)
+
+> [V1.1.5 / 2019.08.31]
+1. "個別管理"新增使用日期篩選機制

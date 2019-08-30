@@ -184,7 +184,7 @@ class UpImageFragment : Fragment() {
                         val date = DateUtils.formatDate(Date(), "yyyyMMdd")
                         val timestamp = DateUtils.formatDate(Date(), "yyyyMMdd-HH:mm:ss")
                         //設定圖片名稱
-                        val imageName = activity!!.findViewById<TextInputEditText>(R.id.plantNameText).text.toString()
+                        val plantName = activity!!.findViewById<TextInputEditText>(R.id.plantNameText).text.toString()
                         //設定病歷key
                         val databaseRef = FirebaseDatabase.getInstance().reference
                         val key = databaseRef.push().key
@@ -205,14 +205,14 @@ class UpImageFragment : Fragment() {
 
                                 //將病歷寫入資料庫
                                 var path = "Record/$userId/G$greenhouseID/$date"
-                                databaseRef.child("$path/$key/imageName").setValue(imageName)
+                                databaseRef.child("$path/$key/plantName").setValue(plantName)
                                 databaseRef.child("$path/$key/originURL").setValue(task.result.toString()) //task.result取得downloadURL
                                 databaseRef.child("$path/$key/detectURL").setValue("Null")
                                 databaseRef.child("$path/$key/result").setValue("Null")
                                 databaseRef.child("$path/$key/timestamp").setValue(timestamp)
 
                                 //同步病歷index給Plant
-                                path = "Plant/$userId/G$greenhouseID/$imageName/$timestamp"
+                                path = "Plant/$userId/G$greenhouseID/$plantName/$timestamp"
                                 databaseRef.child(path).setValue(key.toString())
 
                                 //同步MataData
