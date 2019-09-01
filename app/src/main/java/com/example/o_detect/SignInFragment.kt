@@ -130,6 +130,8 @@ class SignInFragment : Fragment() {
                         val user = auth.currentUser
                         if (task.isSuccessful && user!!.isEmailVerified) {    //user.isEmailVerified要先通過信箱驗證
                             Log.d(TAG, "signInWithEmail:Success")
+                            activity!!.getSharedPreferences("userData", Context.MODE_PRIVATE)
+                                .edit().putString("email",inEmail.text.toString()).apply()
                             getXYAnimation(it)
                         }else if(!task.isSuccessful){
                             Log.w(TAG, "signInWithEmail:failure", task.exception)

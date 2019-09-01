@@ -14,37 +14,39 @@
 
         <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless">
 
                 <ImageView
                         android:id="@+id/dataItemImage"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
+                        android:layout_width="120dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentStart="true"
+                        android:contentDescription="@string/app_name"
                         android:scaleType="fitXY"/>
                 <!-- android:src="@drawable/maxresdefault"-->
+
 
                 <TextView
                         android:id="@+id/dataItemTitle"
                         style="@style/TextAppearance.AppCompat.Headline"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/dataItemImage"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginBottom="8dp"
                         android:padding="8dp"
-                        android:textColor="@color/colorText" />
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@id/dataItemImage"
+                        android:layout_alignParentTop="true"
+                        android:textColor="@color/colorTextBlack" />
 
                 <TextView
                         android:id="@+id/dataItemResult"
                         style="@style/TextAppearance.AppCompat.Subhead"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:layout_below="@+id/dataItemTitle"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_below="@id/dataItemTitle"
+                        android:layout_toEndOf="@id/dataItemImage"
+                        android:layout_alignParentBottom="true"
                         android:padding="8dp"/>
 
         </RelativeLayout>

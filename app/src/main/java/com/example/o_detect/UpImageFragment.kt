@@ -11,16 +11,19 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.*
+import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.renderscript.Sampler
 import android.text.format.DateUtils
 import android.util.Log
 import android.view.*
 import androidx.annotation.NonNull
+import androidx.annotation.Nullable
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.core.widget.ContentLoadingProgressBar
@@ -102,24 +105,36 @@ class UpImageFragment : Fragment() {
 
         val auth = FirebaseAuth.getInstance()
         val userId = auth.currentUser!!.uid
-        val path = "MataData/$userId/houseSum"
+        val path = "MataData/$userId/houseNum"
         val databaseRef = FirebaseDatabase.getInstance().reference
-        databaseRef.child(path).addListenerForSingleValueEvent(object: ValueEventListener {
+        val preference = activity!!.getSharedPreferences("houseData",Context.MODE_PRIVATE)
+        val houseNum = preference.getInt("houseNum",0)
+        if(houseNum == 0) {
+            databaseRef.child(path).addListenerForSingleValueEvent(object : ValueEventListener {
 
-            override fun onCancelled(p0: DatabaseError) {}
+                override fun onCancelled(p0: DatabaseError) {}
 
-            override fun onDataChange(p0: DataSnapshot) {
-                if(p0.value.toString().toInt() >= 2) {
-                    for (i in 2..p0.value.toString().toInt()) {
-                        spinnerList.add("溫室$i")
+                override fun onDataChange(p0: DataSnapshot) {
+                    //將溫室資料存在local(使用apply效能較好)
+                    preference.edit().putInt("houseNum", p0.value.toString().toInt()).apply()
+                    if (p0.value.toString().toInt() >= 2) {
+                        for (i in 2..p0.value.toString().toInt()) {
+                            spinnerList.add("溫室$i")
+                        }
                     }
+
+                    Log.i("溫室數量", p0.value.toString())
                 }
-
-                Log.i("溫室數量",p0.value.toString())
+            })
+        }else{
+            if (houseNum >= 2) {
+                for (i in 2..houseNum) {
+                    spinnerList.add("溫室$i")
+                }
             }
-        })
+        }
 
-        val spinnerAdapter = ArrayAdapter(activity,R.layout.greenhouse_list,spinnerList)
+        val spinnerAdapter = ArrayAdapter(activity!!,R.layout.greenhouse_list,spinnerList)
         spinnerAdapter.setDropDownViewResource(R.layout.greenhouse_list)
         spinner.adapter = spinnerAdapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{

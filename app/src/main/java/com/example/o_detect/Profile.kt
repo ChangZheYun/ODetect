@@ -1,6 +1,7 @@
 package com.example.o_detect
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -37,25 +38,41 @@ class Profile:Fragment() {
         var path = "User/$userId"
         val databaseRef = FirebaseDatabase.getInstance().reference
 
-        //持續監聽
-        databaseRef.child("$path/username").addValueEventListener( object: ValueEventListener {
+        //Username顯示
+        val username = activity!!.getSharedPreferences("userData", Context.MODE_PRIVATE).getString("username","")
+        if(username!!.isEmpty()) {
+            path = "User/$userId/username"
+            databaseRef.child(path).addListenerForSingleValueEvent(object : ValueEventListener {
 
-              override fun onCancelled(p0: DatabaseError) {}
+                override fun onCancelled(p0: DatabaseError) {}
 
-              override fun onDataChange(p0: DataSnapshot) {
-                  profileUsername.text = p0.value.toString()
-              }
-        })
+                override fun onDataChange(p0: DataSnapshot) {
+                    profileUsername.text = p0.value.toString()
+                    activity!!.getSharedPreferences("userData", Context.MODE_PRIVATE)
+                        .edit().putString("username",p0.value.toString()).apply()
+                }
+            })
+        }else{
+            profileUsername.text = username
+        }
 
-        //單次監聽
-        databaseRef.child("$path/email").addListenerForSingleValueEvent(object: ValueEventListener {
+        //Email顯示
+        val email = activity!!.getSharedPreferences("userData", Context.MODE_PRIVATE).getString("email","")
+        if(email!!.isEmpty()) {
+            path = "User/$userId/email"
+            databaseRef.child(path).addListenerForSingleValueEvent(object : ValueEventListener {
 
-            override fun onCancelled(p0: DatabaseError) {}
+                override fun onCancelled(p0: DatabaseError) {}
 
-            override fun onDataChange(p0: DataSnapshot) {
-                profileEmail.text = p0.value.toString()
-            }
-        })
+                override fun onDataChange(p0: DataSnapshot) {
+                    profileEmail.text = p0.value.toString()
+                    activity!!.getSharedPreferences("userData", Context.MODE_PRIVATE)
+                        .edit().putString("email",p0.value.toString()).apply()
+                }
+            })
+        }else{
+            profileEmail.text = email
+        }
 
         updateUsernameButton.setOnClickListener {
             val dialog = AlertDialog.Builder(activity)
@@ -76,7 +93,11 @@ class Profile:Fragment() {
                         if(newUsername.text!!.isEmpty()) {
                             Snackbar.make(view!!, "名稱不得為空", Snackbar.LENGTH_SHORT).show()
                         }else{
-                            databaseRef.child("$path/username").setValue(newUsername.text.toString())
+                            path = "User/$userId/username"
+                            databaseRef.child(path).setValue(newUsername.text.toString())
+                            val preference = activity!!.getSharedPreferences("userData", Context.MODE_PRIVATE)
+                            preference.edit().putString("username",newUsername.text.toString()).apply()
+                            profileUsername.text = newUsername.text.toString()
                             Snackbar.make(view!!, "更換名稱成功", Snackbar.LENGTH_SHORT).show()
                         }
                     }
@@ -123,25 +144,23 @@ class Profile:Fragment() {
 
         signOutButton.setOnClickListener {
             auth.signOut()
+            activity!!.getSharedPreferences("houseData", Context.MODE_PRIVATE).edit().clear().apply()
+            activity!!.getSharedPreferences("userData", Context.MODE_PRIVATE).edit().clear().apply()
             startActivity(Intent(activity, MainActivity::class.java))
         }
 
         addGreenhouseButton.setOnClickListener{
+            val preference = activity!!.getSharedPreferences("houseData", Context.MODE_PRIVATE)
+            var houseNum = preference.getInt("houseNum",1)
+            houseNum+=1
+            preference.edit().putInt("houseNum",houseNum).apply()
+
             path = "MataData/$userId"
-            databaseRef.child("$path/houseSum").addListenerForSingleValueEvent(object: ValueEventListener {
-
-                override fun onCancelled(p0: DatabaseError) {}
-
-                override fun onDataChange(p0: DataSnapshot) {
-                    var num : Int = p0.value.toString().toInt()
-                    num+=1
-                    databaseRef.child("$path/houseSum").setValue(num)
-                    databaseRef.child("$path/G$num/health").setValue(num)
-                    databaseRef.child("$path/G$num/unhealth").setValue(num)
-                    databaseRef.child("$path/G$num/housePlantSum").setValue(num)
-                    Snackbar.make(view!!, "溫室數量:$num", Snackbar.LENGTH_SHORT).show()
-                }
-            })
+            databaseRef.child("$path/houseNum").setValue(houseNum)
+            databaseRef.child("$path/G$houseNum/health").setValue(houseNum)
+            databaseRef.child("$path/G$houseNum/unhealth").setValue(houseNum)
+            databaseRef.child("$path/G$houseNum/housePlantSum").setValue(houseNum)
+            Snackbar.make(view!!, "溫室數量: $houseNum", Snackbar.LENGTH_SHORT).show()
         }
     }
 }

@@ -35,7 +35,7 @@ import kotlin.math.absoluteValue
 
 class DataListFragment :Fragment(){
 
-    private lateinit var dataArray : Array<DataModel?>
+    private lateinit var dataArray : ArrayList<DataModel?>
     private lateinit var auth : FirebaseAuth
     private lateinit var userId : String
     private lateinit var databaseRef : FirebaseDatabase
@@ -49,9 +49,9 @@ class DataListFragment :Fragment(){
     class DataAdapter : RecyclerView.Adapter<DataAdapter.ViewHolder>{
 
         private var context : Context
-        private var data : Array<DataModel?>
+        private var data : ArrayList<DataModel?>
 
-        constructor(context:Context,data:Array<DataModel?>) : super(){
+        constructor(context:Context,data:ArrayList<DataModel?>) : super(){
             this.context = context
             this.data = data
         }
@@ -59,7 +59,7 @@ class DataListFragment :Fragment(){
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataAdapter.ViewHolder {
             val cell = LayoutInflater.from(context).inflate(R.layout.dataitem,parent,false)
             val viewHolder = ViewHolder(cell)
-            cell.layoutParams.height = 900
+            cell.layoutParams.height = 350
             viewHolder.image = cell.findViewById(R.id.dataItemImage)
             viewHolder.name = cell.findViewById(R.id.dataItemTitle)
             viewHolder.result = cell.findViewById(R.id.dataItemResult)
@@ -73,7 +73,7 @@ class DataListFragment :Fragment(){
         override fun onBindViewHolder(holder: DataAdapter.ViewHolder, position: Int) {
             //背景載入圖片
             ImageAsyncTask().execute(AsyncModel(holder.image,data[position]?.imageURL.toString()) )
-            holder.name.text = data[position]?.imageName.toString()
+            holder.name.text = data[position]?.plantName.toString()
             holder.result.text = data[position]?.result.toString()
             Log.d("test---",holder.result.text.toString())
             /*holder.title.setOnClickListener{
@@ -95,15 +95,17 @@ class DataListFragment :Fragment(){
     }
 
     class DataModel {
-        var imageName : String
+        var plantName : String
         var imageURL : String
-        var id : String
+        var rid : String
         var result : String
-        constructor(imageName:String,imageURL:String,id:String,result:String){
-            this.imageName = imageName
+        var timestamp : String
+        constructor(plantName:String,imageURL:String,rid:String,result:String,timestamp:String){
+            this.plantName = plantName
             this.imageURL = imageURL
-            this.id = id
+            this.rid = rid
             this.result = result
+            this.timestamp = timestamp
         }
     }
 
@@ -173,7 +175,7 @@ class DataListFragment :Fragment(){
 
 
         //初始資料
-        getDataCount()
+        //updateData()
         //初始View
         //initView()
 
@@ -186,16 +188,22 @@ class DataListFragment :Fragment(){
         refreshRecycle.setColorSchemeColors(ContextCompat.getColor(context!!,R.color.colorPrimary))
         //設定更新事件
         refreshRecycle.setOnRefreshListener {
-            getDataCount()
-            initView()
+            updateData()
+            //initView()
             Snackbar.make(view!!,"下拉更新", Snackbar.LENGTH_SHORT).show()
         }
 
         //取得greenhouse編號(從database取得溫室數量)
         val houseSpinner = activity!!.findViewById<AppCompatSpinner>(R.id.greenHouseDisplayList)
         var houseSpinnerList = arrayListOf("溫室1")
-
-        var path = "MataData/$userId/houseSum"
+        //讀取溫室數量
+        val houseNum = activity!!.getSharedPreferences("houseData",Context.MODE_PRIVATE).getInt("houseNum",1)
+        if(houseNum >= 2) {
+            for (i in 2..houseNum) {
+                houseSpinnerList.add("溫室$i")
+            }
+        }
+        /*var path = "MataData/$userId/houseNum"
         databaseRef.reference.child(path).addListenerForSingleValueEvent(object: ValueEventListener {
 
             override fun onCancelled(p0: DatabaseError) {}
@@ -209,7 +217,7 @@ class DataListFragment :Fragment(){
 
                 Log.i("溫室數量",p0.value.toString())
             }
-        })
+        })*/
 
         var houseSpinnerAdapter = ArrayAdapter(activity!!,R.layout.greenhouse_list,houseSpinnerList)
         houseSpinnerAdapter.setDropDownViewResource(R.layout.greenhouse_list)
@@ -219,9 +227,7 @@ class DataListFragment :Fragment(){
             override fun onNothingSelected(p0: AdapterView<*>?) {}
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 greenhouseID = p2+1
-                getDataCount()
-                initView()
-                //updateData()
+                updateData()
             }
 
         }
@@ -249,46 +255,13 @@ class DataListFragment :Fragment(){
                 //path = "Record/$userId/G$greenhouseID/${dateList.text}"
                 date = dateList.text.toString()
                 for( i in 0..20){
-                    Log.i("日期---",date)}
-                getDataCount()
-                initView()
+                    Log.i("日期----",date)}
+                updateData()
+                //initView()
 
             }, year, month, day).show()
 
         }
-
-
-    }
-
-    //初始化資料
-    private fun getDataCount(){
-
-        //設定路徑
-        val path = "Record/$userId/G$greenhouseID/$date"
-        val dataSearch = databaseRef.reference
-
-        Log.i("日期---",date)
-        if(dataCount==0){
-            dataArray = arrayOfNulls(1)
-            dataArray[0]=DataModel("","","","無資料，馬上新增一筆吧!")
-            initView()
-        }
-
-        //取得資料大小
-        dataSearch.child(path).addListenerForSingleValueEvent(object : ValueEventListener{
-            override fun onCancelled(p0: DatabaseError) {}
-            override fun onDataChange(p0: DataSnapshot) {
-                dataCount = p0.childrenCount.toInt()
-                Log.i("Count--","$dataCount+$greenhouseID")
-                dataArray = arrayOfNulls(dataCount)
-                if(dataCount==0){
-                    dataArray = arrayOfNulls(1)
-                    dataArray[0]=DataModel("","","","無資料，馬上新增一筆吧!")
-                }
-                updateData()
-                //initView()
-            }
-        })
 
 
     }
@@ -298,42 +271,52 @@ class DataListFragment :Fragment(){
         val path = "Record/$userId/G$greenhouseID/$date"
         val dataSearch = databaseRef.reference
 
+        val init = DataModel("","","","無資料，馬上新增一筆吧!","")
+        dataArray = arrayListOf(init)
+
         dataSearch.child(path).addListenerForSingleValueEvent( object: ValueEventListener {
 
             override fun onCancelled(p0: DatabaseError) {}
 
             override fun onDataChange(p0: DataSnapshot) {
 
-                var i = 0
+                dataCount = 0
+                if(p0.childrenCount > 0)
+                    dataArray.removeAt(dataArray.size-1)
+
                 p0.children.forEach{ it ->
                     //  val value = it.getValue(DataJSON::class.java)!!
                     //Log.d("TAG",it.value.toString())
-                    var data = DataModel("1","1","1", "1")
-                    data.id = it.key.toString()
-                    Log.i("data-imageName:",data.id)
+                    //if(dataCount==0)
+                    //    dataArray.removeAt(0)
+                    var data = DataModel("1","1","1", "1","1")
+                    data.rid = it.key.toString()
+                    Log.i("data-imageName:",data.rid)
                     it.children.forEach {
-                        if(it.key=="imageName"){
-                            data.imageName = it.value.toString()
-                        }else if(it.key=="result") {
-                            data.result = it.value.toString()
-                        }else if(it.key=="originURL"){
-                            data.imageURL = it.value.toString()
+                        when(it.key){
+                            "plantName" ->{
+                                data.plantName = it.value.toString()
+                            }
+                            "result" ->{
+                                data.result = it.value.toString()
+                            }
+                            "originURL" ->{
+                                data.imageURL = it.value.toString()
+                            }
+                            "timestamp" ->{
+                                data.timestamp = it.value.toString()
+                            }
                         }
                     }
-                    Log.i("i=",i.toString())
-                    dataArray[i] = data
-                    Log.d("DDD-dataArray-","${dataArray[i]!!.imageURL} ${dataArray[i]!!.result}")
-                    i++
+                    dataArray.add(data)
+                    //Log.d("DDD-dataArray-","${dataArray[i]!!.imageURL} ${dataArray[i]!!.result}")
+                    dataCount+=1
+                }
+
+                for( i in 0 until dataCount){
+                    Log.i("Test-dataArray--","${dataArray[i]?.imageURL} ${dataArray[i]?.result}" )
                 }
                 initView()
-                recycleradpater.notifyDataSetChanged()
-
-                /*   for (ds:DataSnapshot in p0.children) {
-                       val value = ds.getValue(String::class.java)!!
-                       Log.d("TAG",ds.key)
-                   }
-                   Log.d("TEST--",p0.value.toString())*/
-
             }
         })
     }
@@ -397,13 +380,14 @@ class DataListFragment :Fragment(){
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val position = viewHolder.adapterPosition
-            databaseRef.reference.child( "Record/$userId/G$greenhouseID/$date/${dataArray[position]!!.id}").removeValue()
-            databaseRef.reference.child( "Plant/$userId/G$greenhouseID/${dataArray[position]!!.imageName}").removeValue()
-            storageRef.reference.child("$userId/G$greenhouseID/$date/originImage/${dataArray[position]!!.id}.jpg").delete()
+            databaseRef.reference.child( "Record/$userId/G$greenhouseID/$date/${dataArray[position]!!.rid}").removeValue()
+            databaseRef.reference.child( "Plant/$userId/G$greenhouseID/${dataArray[position]!!.plantName}/${dataArray[position]!!.timestamp}").removeValue()
+            storageRef.reference.child("$userId/G$greenhouseID/$date/originImage/${dataArray[position]!!.rid}.jpg").delete()
             //結果圖還沒刪除
+            //刪除選中item
+            dataArray.removeAt(position)
             recycleradpater.notifyItemRemoved(position)
-            getDataCount()
-            initView()
+            recycleradpater.notifyItemRangeChanged(position,dataArray.size)
         }
     }
   /*  class SpinnerBehavior : CoordinatorLayout.Behavior<androidx.appcompat.widget.AppCompatSpinner>{

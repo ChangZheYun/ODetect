@@ -13,7 +13,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:tabMinWidth="150dp"
-                app:tabSelectedTextColor="@color/colorSign"
+                app:tabSelectedTextColor="@color/colorTextBlack"
                 app:tabTextColor="@color/colorSignNoSelect"
                 app:tabGravity="fill"
                 app:tabMode="fixed"

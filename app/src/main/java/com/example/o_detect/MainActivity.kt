@@ -3,6 +3,7 @@ package com.example.o_detect
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -54,6 +55,8 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent(this@MainActivity, LoginActivity::class.java))
             } else  //已登入
             {
+                getSharedPreferences("userData", Context.MODE_PRIVATE)
+                    .edit().putString("email",user.email).apply()
                 startActivity(Intent(this@MainActivity, Content::class.java))
             }
             finish()

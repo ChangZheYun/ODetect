@@ -133,12 +133,17 @@ class SignUpFragment:Fragment() {
                                         userRef.setValue(user.email.toString())
                                         userRef = databaseRef.child("$path/username")
                                         userRef.setValue(upUsername.text.toString())
+
+                                        //寫入local
+                                        activity!!.getSharedPreferences("userData", Context.MODE_PRIVATE)
+                                            .edit().putString("username",upUsername.text.toString()).apply()
+
                                         //設定預設資料
                                         path = "MataData/$userId"
                                         databaseRef.child("$path/healthSum").setValue(0)
                                         databaseRef.child("$path/unhealthSum").setValue(0)
                                         databaseRef.child("$path/plantSum").setValue(0)
-                                        databaseRef.child("$path/houseSum").setValue(1)
+                                        databaseRef.child("$path/houseNum").setValue(1)
                                         databaseRef.child("$path/G1/health").setValue(0)
                                         databaseRef.child("$path/G1/unhealth").setValue(0)
                                         databaseRef.child("$path/G1/housePlantSum").setValue(0)
