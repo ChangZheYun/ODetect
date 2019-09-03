@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/floatingGreenHouseList"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:spinnerMode="dropdown"
+                android:layout_marginTop="30dp"
+                android:layout_marginStart="10dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/floatingPlantNameTextLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:hint="@string/prompt_plant_name"
+                app:errorEnabled="true"
+                app:counterEnabled="true"
+                app:counterMaxLength="10"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:background="@color/colorText"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_marginEnd="10dp">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/floatingPlantNameText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLength="10"
+                    android:selectAllOnFocus="true">
+            </com.google.android.material.textfield.TextInputEditText>
+        </com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>

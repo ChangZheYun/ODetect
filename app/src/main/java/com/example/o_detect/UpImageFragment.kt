@@ -24,6 +24,7 @@ import android.util.Log
 import android.view.*
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
+import androidx.appcompat.widget.AppCompatSpinner
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.core.widget.ContentLoadingProgressBar
@@ -45,6 +46,7 @@ import java.io.File
 import java.io.InputStreamReader
 import java.io.PrintWriter
 import java.lang.Exception
+import java.lang.Thread.interrupted
 import java.lang.Thread.sleep
 import java.net.Socket
 import java.net.URL
@@ -66,6 +68,8 @@ class UpImageFragment : Fragment() {
     private lateinit var storageFirebase :FirebaseStorage
     private lateinit var plantName : TextInputEditText
     private lateinit var setImageHandler : Handler
+    private lateinit var auth : FirebaseAuth
+    private lateinit var userId : String
     private var greenhouseID = 1
     private var packetStatus = 0
 
@@ -87,7 +91,11 @@ class UpImageFragment : Fragment() {
         storageFirebase = FirebaseStorage.getInstance()
         plantName = activity!!.findViewById(R.id.plantNameText)
 
+        auth = FirebaseAuth.getInstance()
+        userId = auth.currentUser!!.uid
+
         openAlbum.setOnClickListener{
+            plantName = activity!!.findViewById(R.id.plantNameText)
             if(plantName.text!!.isNotEmpty()) {
                 onGallery()
             }else{
@@ -96,15 +104,13 @@ class UpImageFragment : Fragment() {
         }
 
         insertImageButton.setOnClickListener{
-            onGallery()
+            uploadImageData()
         }
 
         //取得greenhouse編號(從database取得溫室數量)
         val spinner = activity!!.findViewById<androidx.appcompat.widget.AppCompatSpinner>(R.id.greenHouseList)
-        var spinnerList = arrayListOf("溫室1")
+        val spinnerList = arrayListOf("溫室1")
 
-        val auth = FirebaseAuth.getInstance()
-        val userId = auth.currentUser!!.uid
         val path = "MataData/$userId/houseNum"
         val databaseRef = FirebaseDatabase.getInstance().reference
         val preference = activity!!.getSharedPreferences("houseData",Context.MODE_PRIVATE)
@@ -172,6 +178,75 @@ class UpImageFragment : Fragment() {
         startActivityForResult(intent,PHOTO_FROM_GALLERY)
     }
 
+    //設定"上傳圖片"的floatingButton
+    private fun uploadImageData(){
+        val dialog = AlertDialog.Builder(activity)
+        val inflater = activity!!.layoutInflater
+        val dataUploadXML = inflater.inflate(R.layout.data_upload,null)
+
+        val spinnerList = arrayListOf("溫室1")
+        val spinner = dataUploadXML.findViewById<AppCompatSpinner>(R.id.floatingGreenHouseList)
+        plantName = dataUploadXML.findViewById(R.id.floatingPlantNameText)
+
+        val path = "MataData/$userId/houseNum"
+        val databaseRef = FirebaseDatabase.getInstance().reference
+        val preference = activity!!.getSharedPreferences("houseData",Context.MODE_PRIVATE)
+        val houseNum = preference.getInt("houseNum",0)
+        if(houseNum == 0) {
+            databaseRef.child(path).addListenerForSingleValueEvent(object : ValueEventListener {
+
+                override fun onCancelled(p0: DatabaseError) {}
+
+                override fun onDataChange(p0: DataSnapshot) {
+                    //將溫室資料存在local(使用apply效能較好)
+                    preference.edit().putInt("houseNum", p0.value.toString().toInt()).apply()
+                    if (p0.value.toString().toInt() >= 2) {
+                        for (i in 2..p0.value.toString().toInt()) {
+                            spinnerList.add("溫室$i")
+                        }
+                    }
+                }
+            })
+        }else{
+            if (houseNum >= 2) {
+                for (i in 2..houseNum) {
+                    spinnerList.add("溫室$i")
+                }
+            }
+        }
+
+        val spinnerAdapter = ArrayAdapter(activity!!,R.layout.greenhouse_list,spinnerList)
+        spinnerAdapter.setDropDownViewResource(R.layout.greenhouse_list)
+        spinner.adapter = spinnerAdapter
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                greenhouseID = p2+1
+            }
+
+        }
+
+
+        //設定Dialog
+        dialog.setView(dataUploadXML)
+            .setCancelable(false)
+            .setTitle("上傳圖片")
+            .setPositiveButton(R.string.confirm){ _ , _ ->
+
+                if(plantName.text!!.isEmpty()) {
+                    Snackbar.make(view!!, "蘭花名稱不得為空", Snackbar.LENGTH_SHORT).show()
+                }else{
+                    onGallery()
+                }
+
+            }
+            .setNegativeButton(R.string.cancel,null)
+            .create()
+            .show()
+    }
+
+
     //從相簿回來
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -198,8 +273,6 @@ class UpImageFragment : Fragment() {
                         //設定日期及時間
                         val date = DateUtils.formatDate(Date(), "yyyyMMdd")
                         val timestamp = DateUtils.formatDate(Date(), "yyyyMMdd-HH:mm:ss")
-                        //設定圖片名稱
-                        val plantName = activity!!.findViewById<TextInputEditText>(R.id.plantNameText).text.toString()
                         //設定病歷key
                         val databaseRef = FirebaseDatabase.getInstance().reference
                         val key = databaseRef.push().key
@@ -220,14 +293,14 @@ class UpImageFragment : Fragment() {
 
                                 //將病歷寫入資料庫
                                 var path = "Record/$userId/G$greenhouseID/$date"
-                                databaseRef.child("$path/$key/plantName").setValue(plantName)
+                                databaseRef.child("$path/$key/plantName").setValue(plantName.text.toString())
                                 databaseRef.child("$path/$key/originURL").setValue(task.result.toString()) //task.result取得downloadURL
                                 databaseRef.child("$path/$key/detectURL").setValue("Null")
                                 databaseRef.child("$path/$key/result").setValue("Null")
                                 databaseRef.child("$path/$key/timestamp").setValue(timestamp)
 
                                 //同步病歷index給Plant
-                                path = "Plant/$userId/G$greenhouseID/$plantName/$timestamp"
+                                path = "Plant/$userId/G$greenhouseID/${plantName.text.toString()}/$timestamp"
                                 databaseRef.child(path).setValue(key.toString())
 
                                 //同步MataData
@@ -260,8 +333,11 @@ class UpImageFragment : Fragment() {
                                 })
 
                                 //傳送socket
+                                Log.i("傳送socket測試","測試測試")
+                                packetStatus = 0
                                 hintText.text = resources.getString(R.string.hint3)
                                 PacketAsyncTask().execute(PacketModel(task.result.toString(),path))
+                                //PacketAsyncTask().cancel(true)
                             }
 
                         }
@@ -303,19 +379,24 @@ class UpImageFragment : Fragment() {
             val host = "120.113.173.82"
             val port = "6688"
 
-            try
-            {
+            try {
                 //開thread處理client傳送socket
-                val clientThread = Thread {
+                /*val clientThread = Thread {
                     val data = PacketModel(p0[0]!!.URL,p0[0]!!.path)
                     val client = ClientSocket(host, port.toInt())
                     client.update(data)
                 }
-                clientThread.start()
-            }
-            catch(e: Exception) {
+                clientThread.start()*/
+                val data = PacketModel(p0[0]!!.URL, p0[0]!!.path)
+                val client = ClientSocket(host, port.toInt())
+                client.update(data)
+            }catch (e: InterruptedException){
+                Log.i("Socket斷線","已斷線")
+                PacketAsyncTask().cancel(true)
+            }catch (e: Exception) {
                 e.printStackTrace()
             }
+
             return 0
         }
 
@@ -341,7 +422,10 @@ class UpImageFragment : Fragment() {
                             timer.cancel()
                             timer.purge()
                             Log.i("[Socket]","Closed")
-                            close()
+                            clientRead.interrupt()
+                            reader.close()
+                            writer.close()
+                            PacketAsyncTask().cancel(true)
                         }else{
                             val msg = data.URL
                             //向服務器寫入
@@ -352,6 +436,7 @@ class UpImageFragment : Fragment() {
 
                 },0,1000)
             }
+
         }
 
         //開啟一個線程從服務器讀取數據

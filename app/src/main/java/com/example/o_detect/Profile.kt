@@ -83,25 +83,21 @@ class Profile:Fragment() {
             dialog.setView(updateUserNameXML)
                 .setCancelable(false)
                 .setTitle("更換名稱")
-                .setPositiveButton(R.string.confirm,object :DialogInterface.OnClickListener{
+                .setPositiveButton(R.string.confirm){ _ , _ ->
+                    val newUsername = updateUserNameXML.findViewById<TextInputEditText>(R.id.updateUsernameText)
+                    Log.d("newUsername=",newUsername.text.toString())
 
-                    override fun onClick(p0: DialogInterface?, p1: Int) {
-
-                        val newUsername = updateUserNameXML.findViewById<TextInputEditText>(R.id.updateUsernameText)
-                        Log.d("newUsername=",newUsername.text.toString())
-
-                        if(newUsername.text!!.isEmpty()) {
-                            Snackbar.make(view!!, "名稱不得為空", Snackbar.LENGTH_SHORT).show()
-                        }else{
-                            path = "User/$userId/username"
-                            databaseRef.child(path).setValue(newUsername.text.toString())
-                            val preference = activity!!.getSharedPreferences("userData", Context.MODE_PRIVATE)
-                            preference.edit().putString("username",newUsername.text.toString()).apply()
-                            profileUsername.text = newUsername.text.toString()
-                            Snackbar.make(view!!, "更換名稱成功", Snackbar.LENGTH_SHORT).show()
-                        }
+                    if(newUsername.text!!.isEmpty()) {
+                        Snackbar.make(view!!, "名稱不得為空", Snackbar.LENGTH_SHORT).show()
+                    }else{
+                        path = "User/$userId/username"
+                        databaseRef.child(path).setValue(newUsername.text.toString())
+                        val preference = activity!!.getSharedPreferences("userData", Context.MODE_PRIVATE)
+                        preference.edit().putString("username",newUsername.text.toString()).apply()
+                        profileUsername.text = newUsername.text.toString()
+                        Snackbar.make(view!!, "更換名稱成功", Snackbar.LENGTH_SHORT).show()
                     }
-                })
+                }
                 .setNegativeButton(R.string.cancel,null)
                 .create()
                 .show()
@@ -116,27 +112,23 @@ class Profile:Fragment() {
             dialog.setView(updatePasswordXML)
                 .setCancelable(false)
                 .setTitle("更換密碼")
-                .setPositiveButton(R.string.confirm,object :DialogInterface.OnClickListener{
+                .setPositiveButton(R.string.confirm) { _ , _ ->
+                    val newPassword = updatePasswordXML.findViewById<TextInputEditText>(R.id.updatePasswordText)
+                    Log.d("newPassWord=", newPassword.text.toString())
 
-                    override fun onClick(p0: DialogInterface?, p1: Int) {
-
-                        val newPassword = updatePasswordXML.findViewById<TextInputEditText>(R.id.updatePasswordText)
-                        Log.d("newPassWord=",newPassword.text.toString())
-
-                        if(newPassword.text!!.isEmpty()) {
-                            Snackbar.make(view!!, "密碼不得為空", Snackbar.LENGTH_SHORT).show()
-                        }else{
-                            auth.currentUser!!.updatePassword(newPassword.text.toString())
-                                .addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        Snackbar.make(view!!, "更換密碼成功", Snackbar.LENGTH_SHORT).show()
-                                    } else {
-                                        Snackbar.make(view!!, "更換密碼失敗:${task.exception}", Snackbar.LENGTH_SHORT).show()
-                                    }
+                    if (newPassword.text!!.isEmpty()) {
+                        Snackbar.make(view!!, "密碼不得為空", Snackbar.LENGTH_SHORT).show()
+                    } else {
+                        auth.currentUser!!.updatePassword(newPassword.text.toString())
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    Snackbar.make(view!!, "更換密碼成功", Snackbar.LENGTH_SHORT).show()
+                                } else {
+                                    Snackbar.make(view!!, "更換密碼失敗:${task.exception}", Snackbar.LENGTH_SHORT).show()
                                 }
-                        }
+                            }
                     }
-                })
+                }
                 .setNegativeButton(R.string.cancel,null)
                 .create()
                 .show()

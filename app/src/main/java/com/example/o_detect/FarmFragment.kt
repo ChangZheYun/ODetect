@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -36,7 +37,7 @@ class FarmFragment:Fragment() {
         super.onActivityCreated(savedInstanceState)
         //ImageAsyncTask().execute("https://firebasestorage.googleapis.com/v0/b/civic-kayak-240607.appspot.com/o/HukCZC5CuTVGlC3yGXC8Pqzscmk1%2F20190821-02%3A20%3A02.jpg?alt=media&token=ac052a2d-9393-4997-bbef-247e62dd138f")
 
-        val linechart = farmLineChart
+        val combinechart = farmCombineChart
         val entries : MutableList<Entry> = mutableListOf()
         //設定資料
         entries.add(Entry(0F,4F))
@@ -45,13 +46,13 @@ class FarmFragment:Fragment() {
         entries.add(Entry(3f,4f))
         entries.add(Entry(5f,10f))
         //設定圖表格式
-        val dataset = LineDataSet(entries,"Customized values")
+        val dataSet = LineDataSet(entries,"Customized values")
         //點選資料橫豎顏色
-        dataset.highLightColor = ContextCompat.getColor(activity!!,R.color.colorButtonNormal)
-        dataset.color = ContextCompat.getColor(activity!!,R.color.colorButtonNormal)
-        dataset.valueTextColor = ContextCompat.getColor(activity!!,R.color.colorHint)
+        dataSet.highLightColor = ContextCompat.getColor(activity!!,R.color.colorButtonNormal)
+        dataSet.color = ContextCompat.getColor(activity!!,R.color.colorButtonNormal)
+        dataSet.valueTextColor = ContextCompat.getColor(activity!!,R.color.colorHint)
 
-        val xAxis = linechart.xAxis
+        val xAxis = combinechart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         val months = arrayOf("Jan", "Feb", "Mar", "Apr","May","June")
         /*val formatter = ValueFormatter{
@@ -61,29 +62,29 @@ class FarmFragment:Fragment() {
         xAxis.valueFormatter = IndexAxisValueFormatter(months)
 
 
-        val yAxisLeft = linechart.axisLeft
+        val yAxisLeft = combinechart.axisLeft
         yAxisLeft.setGranularity(1f)
 
         //取消description
-        linechart.description.isEnabled = false
+        combinechart.description.isEnabled = false
         //不顯示格線
-        linechart.xAxis.setDrawGridLines(false)
-        linechart.axisLeft.setDrawGridLines(false)
+        combinechart.xAxis.setDrawGridLines(false)
+        combinechart.axisLeft.setDrawGridLines(false)
         //不顯示右側
-        linechart.axisRight.isEnabled = false
+        combinechart.axisRight.isEnabled = false
         //設定無資料文字
-        linechart.setNoDataText("無溫室資料")
+        combinechart.setNoDataText("無溫室資料")
         //設定字體大小
         xAxis.textSize = 16f
         yAxisLeft.textSize = 16f
-        dataset.valueTextSize = 12f
+        dataSet.valueTextSize = 12f
 
         // Setting Data
-        val data = LineData(dataset)
-        linechart.setData(data)
-        linechart.animateX(2500)
+        val data = LineData(dataSet)
+        //combinechart.setData(data)
+        combinechart.animateX(2500)
         //refresh
-        linechart.invalidate()
+        combinechart.invalidate()
 
     }
 

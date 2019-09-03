@@ -114,7 +114,7 @@ open class Content : AppCompatActivity(){
         val endRadius = kotlin.math.max(width,height).toFloat()
 
         val circularReveal = ViewAnimationUtils.createCircularReveal(contentDisplay, centerX, centerY, startRadius, endRadius)
-        circularReveal.duration = 1000
+        circularReveal.duration = 800
         circularReveal.interpolator = AccelerateInterpolator()
 
         contentDisplay.visibility = View.VISIBLE
