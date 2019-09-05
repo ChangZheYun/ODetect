@@ -36,17 +36,33 @@
         </LinearLayout>
 
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/refreshRecycle"
+        <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/dataList"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"/>
+                <TextView
+                        android:id="@+id/noDataWarning"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/no_data_warning"
+                        android:gravity="center"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginTop="30dp"/>
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                        android:id="@+id/refreshRecycle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/dataList"
+                                android:layout_width="wrap_content"
+                                android:layout_height="0dp"/>
+
+                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         <!--android:layout_gravity="bottom|end"-->

@@ -22,10 +22,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.farm_overview.*
 import kotlinx.android.synthetic.main.profile.*
 import kotlinx.android.synthetic.main.title_datalist.*
 import java.lang.Exception
+import java.lang.Thread.activeCount
 import java.lang.Thread.sleep
 import java.net.URL
 import java.text.DateFormatSymbols
@@ -72,7 +74,14 @@ class DataListFragment :Fragment(){
 
         override fun onBindViewHolder(holder: DataAdapter.ViewHolder, position: Int) {
             //背景載入圖片
-            ImageAsyncTask().execute(AsyncModel(holder.image,data[position]?.imageURL.toString()) )
+            if(data[position]!!.imageURL.isNotEmpty()){
+                Picasso.with(context)
+                       .load(data[position]!!.imageURL)
+                       .placeholder(R.drawable.photo_black_24dp)
+                       .error(R.drawable.photo_black_24dp)
+                       .into(holder.image)
+            }
+            //ImageAsyncTask().execute(AsyncModel(holder.image,data[position]?.imageURL.toString()) )
             holder.name.text = data[position]?.plantName.toString()
             holder.result.text = data[position]?.result.toString()
             Log.d("test---",holder.result.text.toString())
@@ -271,8 +280,9 @@ class DataListFragment :Fragment(){
         val path = "Record/$userId/G$greenhouseID/$date"
         val dataSearch = databaseRef.reference
 
-        val init = DataModel("","","","無資料，馬上新增一筆吧!","")
+        val init = DataModel("","","","","")
         dataArray = arrayListOf(init)
+        dataArray.removeAt(0)
 
         dataSearch.child(path).addListenerForSingleValueEvent( object: ValueEventListener {
 
@@ -281,8 +291,10 @@ class DataListFragment :Fragment(){
             override fun onDataChange(p0: DataSnapshot) {
 
                 dataCount = 0
+                //有資料時隱藏warning
                 if(p0.childrenCount > 0)
-                    dataArray.removeAt(dataArray.size-1)
+                    noDataWarning.visibility = View.INVISIBLE
+                //    dataArray.removeAt(dataArray.size-1)
 
                 p0.children.forEach{ it ->
                     //  val value = it.getValue(DataJSON::class.java)!!
@@ -353,10 +365,10 @@ class DataListFragment :Fragment(){
 
     inner class ItemDragHelperCallback : ItemTouchHelper.Callback(){
         override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
-            //此处返回可以拖动的方向值
+            //此處返回可以拖動的方向值
             var swipe = 0
             var move = 0
-            //此处为 假设recyclerview 不为空
+            //此處為 假設recyclerview不為空
             recyclerView.let {
                 if (recyclerView.layoutManager is LinearLayoutManager) {
                     //左滑刪除

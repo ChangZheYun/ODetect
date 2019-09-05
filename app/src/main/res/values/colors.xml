@@ -18,6 +18,9 @@
     <color name="uploadButtonPress">#008FA1</color>
     <color name="background">#F5F5F5</color>
 
+    <color name="health">#00C853</color>
+    <color name="unhealth">#D50000</color>
+
     <!--orange-->
     <color name="md_orange_50">#FFF3E0</color>
     <color name="md_orange_100">#FFE0B2</color>

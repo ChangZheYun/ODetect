@@ -37,6 +37,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.title_uploadimage.*
 import kotlinx.android.synthetic.main.title_uploadimage.view.*
 import kotlinx.android.synthetic.main.title_uploadimage.view.imageView
@@ -72,6 +73,8 @@ class UpImageFragment : Fragment() {
     private lateinit var userId : String
     private var greenhouseID = 1
     private var packetStatus = 0
+    private var date = DateUtils.formatDate(Date(), "yyyyMMdd")
+    private var key = ""
 
     companion object{
         private const val PHOTO_FROM_GALLERY = 1
@@ -108,10 +111,10 @@ class UpImageFragment : Fragment() {
         }
 
         //取得greenhouse編號(從database取得溫室數量)
-        val spinner = activity!!.findViewById<androidx.appcompat.widget.AppCompatSpinner>(R.id.greenHouseList)
+        val spinner = activity!!.findViewById<AppCompatSpinner>(R.id.greenHouseList)
         val spinnerList = arrayListOf("溫室1")
 
-        val path = "MataData/$userId/houseNum"
+        var path = "MataData/$userId/houseNum"
         val databaseRef = FirebaseDatabase.getInstance().reference
         val preference = activity!!.getSharedPreferences("houseData",Context.MODE_PRIVATE)
         val houseNum = preference.getInt("houseNum",0)
@@ -161,7 +164,36 @@ class UpImageFragment : Fragment() {
                     hintText.text = resources.getString(R.string.hint5)
                     hintText.visibility = View.INVISIBLE
                     progressBar.visibility = View.INVISIBLE
-                    imageView.visibility = View.VISIBLE
+                    //載入圖片
+                    path = "Record/$userId/G$greenhouseID/$date/$key"
+                    databaseRef.child("$path/detectURL").addListenerForSingleValueEvent(object : ValueEventListener {
+
+                        override fun onCancelled(p0: DatabaseError) {}
+
+                        override fun onDataChange(p0: DataSnapshot) {
+                            imageView.visibility = View.VISIBLE
+                            Picasso.with(context)
+                                .load(p0.value.toString())
+                                .placeholder(R.drawable.photo_black_24dp)
+                                .error(R.drawable.photo_black_24dp)
+                                .into(imageView)
+                        }
+                    })
+                    databaseRef.child("$path/result").addListenerForSingleValueEvent(object : ValueEventListener {
+
+                        override fun onCancelled(p0: DatabaseError) {}
+
+                        override fun onDataChange(p0: DataSnapshot) {
+                            imageResult.visibility = View.VISIBLE
+                            val result = p0.value.toString()
+                            imageResult.text = result
+                            if(result == "health"){
+                                imageResult.setTextColor(ContextCompat.getColor(context!!,R.color.health))
+                            }else{
+                                imageResult.setTextColor(ContextCompat.getColor(context!!,R.color.unhealth))
+                            }
+                        }
+                    })
                 }
             }
         }
@@ -271,11 +303,11 @@ class UpImageFragment : Fragment() {
                         val userId = FirebaseAuth.getInstance().currentUser?.uid.toString()
 
                         //設定日期及時間
-                        val date = DateUtils.formatDate(Date(), "yyyyMMdd")
+                        date = DateUtils.formatDate(Date(), "yyyyMMdd")
                         val timestamp = DateUtils.formatDate(Date(), "yyyyMMdd-HH:mm:ss")
-                        //設定病歷key
+                        //設定病歷key(全域變數)
                         val databaseRef = FirebaseDatabase.getInstance().reference
-                        val key = databaseRef.push().key
+                        key = databaseRef.push().key!!
                         //設定上傳Ref
                         val userUploadImageRef = storageFirebase.reference
                             .child("$userId/G$greenhouseID/$date/originImage/$key.jpg")
@@ -434,7 +466,7 @@ class UpImageFragment : Fragment() {
                         }
                     }
 
-                },0,1000)
+                },0,10000)
             }
 
         }
