@@ -119,14 +119,7 @@ class DataListFragment :Fragment(){
     }
 
     //AsyncTask傳遞所需參數
-    class AsyncModel{
-        var image : ImageView
-        var URL : String
-        constructor(image:ImageView,URL:String){
-            this.image = image
-            this.URL = URL
-        }
-    }
+    class AsyncModel(var image: ImageView, var URL: String)
 
     class ImageAsyncTask : AsyncTask<AsyncModel, Int, Bitmap>() {
 
@@ -301,7 +294,7 @@ class DataListFragment :Fragment(){
                     //Log.d("TAG",it.value.toString())
                     //if(dataCount==0)
                     //    dataArray.removeAt(0)
-                    var data = DataModel("1","1","1", "1","1")
+                    var data = DataModel("1","1","1","1","1")
                     data.rid = it.key.toString()
                     Log.i("data-imageName:",data.rid)
                     it.children.forEach {

@@ -44,4 +44,12 @@
         <item name="android:textColor">@color/uploadButtonText</item>
     </style>
 
+    <style name="dialogSoftKeyboardHidden" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowSoftInputMode">stateHidden|adjustPan</item>
+    </style>
+
+    <style name="dialogSoftKeyboardVisible" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowSoftInputMode">stateVisible|adjustPan</item>
+    </style>
+
 </resources>

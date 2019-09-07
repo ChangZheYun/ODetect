@@ -185,11 +185,15 @@ class UpImageFragment : Fragment() {
 
                         override fun onDataChange(p0: DataSnapshot) {
                             imageResult.visibility = View.VISIBLE
+                            imageHouse.visibility = View.VISIBLE
+                            imagePlantName.visibility = View.VISIBLE
+                            imageDate.visibility = View.VISIBLE
                             val result = p0.value.toString()
-                            imageResult.text = result
                             if(result == "health"){
+                                imageResult.text = resources.getString(R.string.result_health)
                                 imageResult.setTextColor(ContextCompat.getColor(context!!,R.color.health))
                             }else{
+                                imageResult.text = resources.getString(R.string.result_unhealth)
                                 imageResult.setTextColor(ContextCompat.getColor(context!!,R.color.unhealth))
                             }
                         }
@@ -212,9 +216,11 @@ class UpImageFragment : Fragment() {
 
     //設定"上傳圖片"的floatingButton
     private fun uploadImageData(){
-        val dialog = AlertDialog.Builder(activity)
+
+        val dialog = AlertDialog.Builder(activity,R.style.dialogSoftKeyboardHidden)
         val inflater = activity!!.layoutInflater
         val dataUploadXML = inflater.inflate(R.layout.data_upload,null)
+
 
         val spinnerList = arrayListOf("溫室1")
         val spinner = dataUploadXML.findViewById<AppCompatSpinner>(R.id.floatingGreenHouseList)
@@ -267,7 +273,7 @@ class UpImageFragment : Fragment() {
             .setPositiveButton(R.string.confirm){ _ , _ ->
 
                 if(plantName.text!!.isEmpty()) {
-                    Snackbar.make(view!!, "蘭花名稱不得為空", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(view!!, "請輸入蘭花名稱", Snackbar.LENGTH_SHORT).show()
                 }else{
                     onGallery()
                 }
@@ -363,6 +369,13 @@ class UpImageFragment : Fragment() {
                                     }
                                     override fun onComplete(p0: DatabaseError?, p1: Boolean, p2: DataSnapshot?) {}
                                 })
+
+                                imageHouse.text = String.format(resources.getString(R.string.result_house),greenhouseID)
+                                imagePlantName.text = String.format(resources.getString(R.string.result_plant_name),plantName.text.toString())
+                                imageDate.text = String.format(resources.getString(R.string.result_date),timestamp)
+
+                                //清除名稱
+                                plantNameText.setText("")
 
                                 //傳送socket
                                 Log.i("傳送socket測試","測試測試")

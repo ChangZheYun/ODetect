@@ -38,4 +38,10 @@
 
     <!--uploadImage-->
     <string name="prompt_plant_name">輸入蘭花名稱</string>
+    <string name="result_health">健康</string>
+    <string name="result_unhealth">不健康</string>
+    <string name="result_house">溫室: %1$d</string>
+    <string name="result_plant_name">名稱: %1$s</string>
+    <string name="result_date">時間: %1$s</string>
+
 </resources>

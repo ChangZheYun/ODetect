@@ -75,7 +75,7 @@ class Profile:Fragment() {
         }
 
         updateUsernameButton.setOnClickListener {
-            val dialog = AlertDialog.Builder(activity)
+            val dialog = AlertDialog.Builder(activity,R.style.dialogSoftKeyboardVisible)
             val inflater = activity!!.layoutInflater
             val updateUserNameXML = inflater.inflate(R.layout.update_username,null)
 
@@ -104,7 +104,7 @@ class Profile:Fragment() {
         }
 
         updatePasswordButton.setOnClickListener {
-            val dialog = AlertDialog.Builder(activity)
+            val dialog = AlertDialog.Builder(activity,R.style.dialogSoftKeyboardVisible)
             val inflater = activity!!.layoutInflater
             val updatePasswordXML = inflater.inflate(R.layout.update_password,null)
 
@@ -149,9 +149,9 @@ class Profile:Fragment() {
 
             path = "MataData/$userId"
             databaseRef.child("$path/houseNum").setValue(houseNum)
-            databaseRef.child("$path/G$houseNum/health").setValue(houseNum)
-            databaseRef.child("$path/G$houseNum/unhealth").setValue(houseNum)
-            databaseRef.child("$path/G$houseNum/housePlantSum").setValue(houseNum)
+            databaseRef.child("$path/G$houseNum/health").setValue(0)
+            databaseRef.child("$path/G$houseNum/unhealth").setValue(0)
+            databaseRef.child("$path/G$houseNum/housePlantSum").setValue(0)
             Snackbar.make(view!!, "溫室數量: $houseNum", Snackbar.LENGTH_SHORT).show()
         }
     }
