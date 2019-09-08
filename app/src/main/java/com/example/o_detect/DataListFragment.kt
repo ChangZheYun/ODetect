@@ -84,7 +84,6 @@ class DataListFragment :Fragment(){
             //ImageAsyncTask().execute(AsyncModel(holder.image,data[position]?.imageURL.toString()) )
             holder.name.text = data[position]?.plantName.toString()
             holder.result.text = data[position]?.result.toString()
-            Log.d("test---",holder.result.text.toString())
             /*holder.title.setOnClickListener{
                 Log.d("Test--",holder.title.text.toString())
             }*/
@@ -103,25 +102,18 @@ class DataListFragment :Fragment(){
         }
     }
 
-    class DataModel {
-        var plantName : String
-        var imageURL : String
-        var rid : String
-        var result : String
-        var timestamp : String
-        constructor(plantName:String,imageURL:String,rid:String,result:String,timestamp:String){
-            this.plantName = plantName
-            this.imageURL = imageURL
-            this.rid = rid
-            this.result = result
-            this.timestamp = timestamp
-        }
-    }
+    class DataModel(
+        var plantName: String,
+        var imageURL: String,
+        var rid: String,
+        var result: String,
+        var timestamp: String
+    )
 
     //AsyncTask傳遞所需參數
-    class AsyncModel(var image: ImageView, var URL: String)
+    //class AsyncModel(var image: ImageView, var URL: String)
 
-    class ImageAsyncTask : AsyncTask<AsyncModel, Int, Bitmap>() {
+    /*class ImageAsyncTask : AsyncTask<AsyncModel, Int, Bitmap>() {
 
         var image : ImageView? = null
 
@@ -158,7 +150,7 @@ class DataListFragment :Fragment(){
             image?.setImageBitmap(result)
         }
 
-    }
+    }*/
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view : View = inflater.inflate(R.layout.title_datalist,null)
@@ -205,7 +197,7 @@ class DataListFragment :Fragment(){
                 houseSpinnerList.add("溫室$i")
             }
         }
-        /*var path = "MataData/$userId/houseNum"
+        /*var path = "MetaData/$userId/houseNum"
         databaseRef.reference.child(path).addListenerForSingleValueEvent(object: ValueEventListener {
 
             override fun onCancelled(p0: DatabaseError) {}
@@ -287,6 +279,8 @@ class DataListFragment :Fragment(){
                 //有資料時隱藏warning
                 if(p0.childrenCount > 0)
                     noDataWarning.visibility = View.INVISIBLE
+                else
+                    noDataWarning.visibility = View.VISIBLE
                 //    dataArray.removeAt(dataArray.size-1)
 
                 p0.children.forEach{ it ->

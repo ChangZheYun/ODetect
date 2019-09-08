@@ -11,7 +11,7 @@
                 android:id="@+id/floatingGreenHouseList"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:spinnerMode="dropdown"
                 android:layout_marginTop="30dp"
                 android:layout_marginStart="10dp"/>
@@ -20,7 +20,7 @@
                 android:id="@+id/floatingPlantNameTextLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="3"
                 android:hint="@string/prompt_plant_name"
                 app:errorEnabled="true"
                 app:counterEnabled="true"

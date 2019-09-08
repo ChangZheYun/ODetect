@@ -1,6 +1,7 @@
 package com.example.o_detect
 
 import android.annotation.TargetApi
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
@@ -72,6 +73,8 @@ open class Content : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.content_display)
+
+        this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         //設置toolBar
         contentToolbar = findViewById(R.id.contentToolBar)

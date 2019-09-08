@@ -45,9 +45,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/no_data_warning"
+                        android:textSize="18sp"
                         android:gravity="center"
                         app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginTop="30dp"/>
+                        android:layout_marginTop="50dp"/>
 
                 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                         android:id="@+id/refreshRecycle"

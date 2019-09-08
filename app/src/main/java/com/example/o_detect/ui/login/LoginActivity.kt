@@ -19,6 +19,7 @@ import android.widget.*
 import android.R.attr.name
 import android.app.PendingIntent.getActivity
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Gravity.*
@@ -110,6 +111,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
        // val img = findViewById<View>(R.id.headerLayout)
 

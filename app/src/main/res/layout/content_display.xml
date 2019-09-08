@@ -28,34 +28,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/contentToolBar"
                 app:layout_constraintBottom_toBottomOf="parent">
-
-             <!--   <com.google.android.material.tabs.TabLayout
-                        android:id="@+id/contentTabs"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:tabMinWidth="150dp"
-                        app:tabSelectedTextColor="@color/colorSign"
-                        app:tabTextColor="@color/colorSignNoSelect"
-                        app:tabGravity="fill"
-                        app:tabMode="fixed"
-                        app:tabBackground="@color/colorPrimary"
-                        app:tabTextAppearance="@style/contentTabLayoutAppearance"
-                        app:layout_constraintStart_toStartOf="@id/contentView"
-                        app:layout_constraintEnd_toEndOf="@id/contentView"
-                        app:layout_constraintTop_toTopOf="@id/contentView"/>-->
-                <!--    app:tabTextAppearance="@android:style/TextAppearance.Holo.Large"/> Large/Medium/Small-->
-                <!--tabGravity可改為center，tabMode改為scroll-->
-
-            <!--    <androidx.viewpager.widget.ViewPager
-                        android:id="@+id/contentPager"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintStart_toStartOf="@id/contentView"
-                        app:layout_constraintEnd_toEndOf="@id/contentView"
-                        app:layout_constraintTop_toTopOf="@id/contentTabs"/>-->
-
         </FrameLayout>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

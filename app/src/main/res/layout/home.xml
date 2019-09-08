@@ -1,28 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/homeCoordinate"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical">
 
-        <com.google.android.material.tabs.TabLayout
-                android:id="@+id/contentTabs"
+        <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appBarLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabMinWidth="150dp"
-                app:tabSelectedTextColor="@color/colorTextBlack"
-                app:tabTextColor="@color/colorSignNoSelect"
-                app:tabGravity="fill"
-                app:tabMode="fixed"
-                app:tabBackground="@color/colorPrimary"
-                app:tabTextAppearance="@style/contentTabLayoutAppearance"/>
+                android:layout_height="wrap_content">
+                <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/contentTabs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tabMinWidth="150dp"
+                        app:tabSelectedTextColor="@color/colorTextBlack"
+                        app:tabTextColor="@color/colorSignNoSelect"
+                        app:tabGravity="fill"
+                        app:tabMode="fixed"
+                        app:tabBackground="@color/colorPrimary"
+                        app:tabTextAppearance="@style/contentTabLayoutAppearance"
+                        app:layout_scrollFlags="scroll|enterAlways|snap"/>
+
+        </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.viewpager.widget.ViewPager
                 android:id="@+id/contentPager"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-</LinearLayout>
+
+       <!-- <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/insertImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:srcCompat="@drawable/photo"
+                android:layout_gravity="bottom|end"
+                app:maxImageSize="32dp"
+                style="@style/loginButton"/>-->
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

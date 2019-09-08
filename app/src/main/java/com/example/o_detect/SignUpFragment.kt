@@ -139,7 +139,7 @@ class SignUpFragment:Fragment() {
                                             .edit().putString("username",upUsername.text.toString()).apply()
 
                                         //設定預設資料
-                                        path = "MataData/$userId"
+                                        path = "MetaData/$userId"
                                         databaseRef.child("$path/healthSum").setValue(0)
                                         databaseRef.child("$path/unhealthSum").setValue(0)
                                         databaseRef.child("$path/plantSum").setValue(0)

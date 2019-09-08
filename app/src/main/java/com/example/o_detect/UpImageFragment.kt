@@ -37,7 +37,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.google.firebase.storage.internal.Sleeper
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.content_display.*
+import kotlinx.android.synthetic.main.home.*
 import kotlinx.android.synthetic.main.title_uploadimage.*
 import kotlinx.android.synthetic.main.title_uploadimage.view.*
 import kotlinx.android.synthetic.main.title_uploadimage.view.imageView
@@ -75,6 +78,9 @@ class UpImageFragment : Fragment() {
     private var packetStatus = 0
     private var date = DateUtils.formatDate(Date(), "yyyyMMdd")
     private var key = ""
+    private var housePlantSum = 0
+    private var healthNum = 0
+    private var unHealthNum = 0
 
     companion object{
         private const val PHOTO_FROM_GALLERY = 1
@@ -102,7 +108,7 @@ class UpImageFragment : Fragment() {
             if(plantName.text!!.isNotEmpty()) {
                 onGallery()
             }else{
-                Snackbar.make(view!!,"請輸入蘭花名稱",Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(floatingCoordinate,"請輸入蘭花名稱",Snackbar.LENGTH_SHORT).show()
             }
         }
 
@@ -114,7 +120,7 @@ class UpImageFragment : Fragment() {
         val spinner = activity!!.findViewById<AppCompatSpinner>(R.id.greenHouseList)
         val spinnerList = arrayListOf("溫室1")
 
-        var path = "MataData/$userId/houseNum"
+        var path = "MetaData/$userId/houseNum"
         val databaseRef = FirebaseDatabase.getInstance().reference
         val preference = activity!!.getSharedPreferences("houseData",Context.MODE_PRIVATE)
         val houseNum = preference.getInt("houseNum",0)
@@ -188,13 +194,19 @@ class UpImageFragment : Fragment() {
                             imageHouse.visibility = View.VISIBLE
                             imagePlantName.visibility = View.VISIBLE
                             imageDate.visibility = View.VISIBLE
+                            path = "MetaData/$userId/G$greenhouseID"
                             val result = p0.value.toString()
                             if(result == "health"){
+                                healthNum += 1
                                 imageResult.text = resources.getString(R.string.result_health)
                                 imageResult.setTextColor(ContextCompat.getColor(context!!,R.color.health))
+                                databaseRef.child("$path/health").setValue(healthNum.toString())
+                                Log.i("寫入了嗎???",healthNum.toString())
                             }else{
+                                unHealthNum += 1
                                 imageResult.text = resources.getString(R.string.result_unhealth)
                                 imageResult.setTextColor(ContextCompat.getColor(context!!,R.color.unhealth))
+                                databaseRef.child("$path/unhealth").setValue(unHealthNum.toString())
                             }
                         }
                     })
@@ -209,6 +221,37 @@ class UpImageFragment : Fragment() {
     }
 
     private fun onGallery(){
+
+        //先初始化資料
+        housePlantSum = 0
+        healthNum = 0
+        unHealthNum = 0
+
+        //獲取當前資訊
+        val mPath = "MetaData/$userId/G$greenhouseID"
+        val databaseRef = FirebaseDatabase.getInstance().reference
+        databaseRef.child(mPath).addListenerForSingleValueEvent( object: ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {}
+            override fun onDataChange(p0: DataSnapshot) {
+                p0.children.forEach{
+                    when(it.key.toString()){
+                        "health" ->{
+                            healthNum = it.value.toString().toInt()
+                            Log.i("健康數量初始化--",healthNum.toString())
+                        }
+                        "unhealth" ->{
+                            unHealthNum = it.value.toString().toInt()
+                        }
+                        "housePlantSum" ->{
+                            housePlantSum = it.value.toString().toInt()
+                        }
+                    }
+                    Log.i("資訊初始化--",it.value.toString())
+                }
+
+            }
+        })
+
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
         startActivityForResult(intent,PHOTO_FROM_GALLERY)
@@ -216,6 +259,13 @@ class UpImageFragment : Fragment() {
 
     //設定"上傳圖片"的floatingButton
     private fun uploadImageData(){
+
+        //將之前結果關閉
+        imageView.visibility = View.INVISIBLE
+        imageResult.visibility = View.INVISIBLE
+        imageHouse.visibility = View.INVISIBLE
+        imagePlantName.visibility = View.INVISIBLE
+        imageDate.visibility = View.INVISIBLE
 
         val dialog = AlertDialog.Builder(activity,R.style.dialogSoftKeyboardHidden)
         val inflater = activity!!.layoutInflater
@@ -226,7 +276,7 @@ class UpImageFragment : Fragment() {
         val spinner = dataUploadXML.findViewById<AppCompatSpinner>(R.id.floatingGreenHouseList)
         plantName = dataUploadXML.findViewById(R.id.floatingPlantNameText)
 
-        val path = "MataData/$userId/houseNum"
+        val path = "MetaData/$userId/houseNum"
         val databaseRef = FirebaseDatabase.getInstance().reference
         val preference = activity!!.getSharedPreferences("houseData",Context.MODE_PRIVATE)
         val houseNum = preference.getInt("houseNum",0)
@@ -273,7 +323,7 @@ class UpImageFragment : Fragment() {
             .setPositiveButton(R.string.confirm){ _ , _ ->
 
                 if(plantName.text!!.isEmpty()) {
-                    Snackbar.make(view!!, "請輸入蘭花名稱", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(floatingCoordinate, "請輸入蘭花名稱", Snackbar.LENGTH_SHORT).show()
                 }else{
                     onGallery()
                 }
@@ -329,46 +379,70 @@ class UpImageFragment : Fragment() {
                         }).addOnCompleteListener { task ->
                             if(task.isSuccessful){
 
+                                //判斷是否存在，對資訊做更新
+                                var path = "Plant/$userId/G$greenhouseID/${plantName.text.toString()}"
+                                databaseRef.child(path).addListenerForSingleValueEvent( object : ValueEventListener{
+
+                                    override fun onCancelled(p0: DatabaseError) {}
+
+                                    override fun onDataChange(p0: DataSnapshot) {
+
+                                        //子節點不存在sum-1，若存在則依照最後一筆結果判斷health或unHealth-1
+                                        if (p0.childrenCount.toInt() == 0) {
+                                            Log.i("是否存在子節點", "不存在")
+                                            housePlantSum += 1
+                                        } else {
+                                            Log.i("是否存在子節點", "存在")
+                                            var rKey = p0.children.last().key
+                                            val rid = p0.children.last().value.toString()
+                                            rKey = rKey!!.split('-')[0]
+                                            Log.i("rKey", rKey.toString())
+                                            Log.i("rid", rid)
+
+                                            val rPath = "Record/$userId/G$greenhouseID/$rKey/$rid/result"
+                                            databaseRef.child(rPath)
+                                                .addListenerForSingleValueEvent(object : ValueEventListener {
+                                                    override fun onCancelled(p0: DatabaseError) {}
+                                                    override fun onDataChange(p0: DataSnapshot) {
+                                                        when (p0.value.toString()) {
+                                                            "health" -> {
+                                                                healthNum -= 1
+                                                                Log.i("健康數量--", healthNum.toString())
+                                                            }
+                                                            "unhealth" -> {
+                                                                unHealthNum -= 1
+                                                                Log.i("不健康數量--", unHealthNum.toString())
+                                                            }
+                                                        }
+                                                    }
+                                                })
+                                        }
+
+                                        Log.i("健康數量---",healthNum.toString())
+
+                                        //同步病歷rid給Plant
+                                        path = "Plant/$userId/G$greenhouseID/${plantName.text.toString()}/$timestamp"
+                                        databaseRef.child(path).setValue(key)
+                                        Log.i("病歷寫入--", key)
+
+                                        //同步housePlantSum
+                                        path = "MetaData/$userId/G$greenhouseID/housePlantSum"
+                                        databaseRef.child(path).setValue(housePlantSum.toString())
+                                        Log.i("寫入植物總數--", housePlantSum.toString())
+
+                                    }
+
+                                })
+
+
                                 //將病歷寫入資料庫
-                                var path = "Record/$userId/G$greenhouseID/$date"
+                                path = "Record/$userId/G$greenhouseID/$date"
                                 databaseRef.child("$path/$key/plantName").setValue(plantName.text.toString())
                                 databaseRef.child("$path/$key/originURL").setValue(task.result.toString()) //task.result取得downloadURL
                                 databaseRef.child("$path/$key/detectURL").setValue("Null")
                                 databaseRef.child("$path/$key/result").setValue("Null")
                                 databaseRef.child("$path/$key/timestamp").setValue(timestamp)
 
-                                //同步病歷index給Plant
-                                path = "Plant/$userId/G$greenhouseID/${plantName.text.toString()}/$timestamp"
-                                databaseRef.child(path).setValue(key.toString())
-
-                                //同步MataData
-                                path = "MataData/$userId/G$greenhouseID/housePlantSum"
-                                databaseRef.child(path).runTransaction( object : Transaction.Handler{
-                                    override fun doTransaction(p0: MutableData): Transaction.Result {
-                                        var value = 0
-                                        if( p0.value == null )
-                                            value = 1
-                                        else
-                                            value = p0.value.toString().toInt()+1
-                                        p0.value = value
-                                        return Transaction.success(p0)
-                                    }
-                                    override fun onComplete(p0: DatabaseError?, p1: Boolean, p2: DataSnapshot?) {}
-                                })
-
-                                path = "MataData/$userId/plantSum"
-                                databaseRef.child(path).runTransaction( object : Transaction.Handler{
-                                    override fun doTransaction(p0: MutableData): Transaction.Result {
-                                        var value = 0
-                                        if( p0.value == null )
-                                            value = 1
-                                        else
-                                            value = p0.value.toString().toInt()+1
-                                        p0.value = value
-                                        return Transaction.success(p0)
-                                    }
-                                    override fun onComplete(p0: DatabaseError?, p1: Boolean, p2: DataSnapshot?) {}
-                                })
 
                                 imageHouse.text = String.format(resources.getString(R.string.result_house),greenhouseID)
                                 imagePlantName.text = String.format(resources.getString(R.string.result_plant_name),plantName.text.toString())
@@ -479,7 +553,7 @@ class UpImageFragment : Fragment() {
                         }
                     }
 
-                },0,10000)
+                },0,5000)
             }
 
         }

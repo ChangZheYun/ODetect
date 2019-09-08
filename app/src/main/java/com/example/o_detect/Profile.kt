@@ -147,7 +147,7 @@ class Profile:Fragment() {
             houseNum+=1
             preference.edit().putInt("houseNum",houseNum).apply()
 
-            path = "MataData/$userId"
+            path = "MetaData/$userId"
             databaseRef.child("$path/houseNum").setValue(houseNum)
             databaseRef.child("$path/G$houseNum/health").setValue(0)
             databaseRef.child("$path/G$houseNum/unhealth").setValue(0)

@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.CombinedChart
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
@@ -54,8 +55,8 @@ class FarmFragment:Fragment() {
         //手勢操作
         combineChart.setTouchEnabled(true)
         combineChart.isDragEnabled = true
-        combineChart.setScaleEnabled(false)
-        combineChart.setPinchZoom(false)
+        combineChart.setScaleEnabled(true)
+        combineChart.setPinchZoom(true)
         //不顯示右側
         combineChart.axisRight.isEnabled = false
         combineChart.setBorderWidth(1f)
@@ -99,15 +100,17 @@ class FarmFragment:Fragment() {
     private fun initData(){
 
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
-        val path = "MataData/$userId"
+        val path = "MetaData/$userId"
         val databaseRef = FirebaseDatabase.getInstance().reference
         val statistic : MutableList<houseData> = mutableListOf()
 
-        databaseRef.child(path).addListenerForSingleValueEvent( object: ValueEventListener {
+        databaseRef.child(path).addValueEventListener( object: ValueEventListener {
 
             override fun onCancelled(p0: DatabaseError) {}
 
             override fun onDataChange(p0: DataSnapshot) {
+
+                statistic.clear()
 
                 p0.children.forEach{ it ->
                     //Log.i("data-key",it.key.toString())
@@ -147,9 +150,14 @@ class FarmFragment:Fragment() {
         //顯示值
         dataSet.valueTextSize = 12f
         dataSet.setDrawValues(true)
-        dataSet.mode = LineDataSet.Mode.LINEAR             //設定線條形式
-        dataSet.axisDependency = YAxis.AxisDependency.LEFT //資料依賴左邊座標軸
+        dataSet.mode = LineDataSet.Mode.LINEAR               //設定線條形式
+        dataSet.axisDependency = YAxis.AxisDependency.LEFT   //資料依賴左邊座標軸
         dataSet.lineWidth = 2f
+        dataSet.valueFormatter = object : ValueFormatter(){  //設定label為整數
+            override fun getFormattedValue(value: Float): String {
+                return value.toInt().toString()
+            }
+        }
 
         return dataSet
     }

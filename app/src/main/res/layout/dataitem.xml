@@ -5,7 +5,7 @@
         android:id="@+id/dataItemCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="5dp"
         style="@style/mediumCardView"
         app:layout_constraintTop_toTopOf="parent"
         android:background="?android:attr/selectableItemBackgroundBorderless"
@@ -13,6 +13,7 @@
         android:focusable="true">
 
         <RelativeLayout
+                android:id="@+id/dataLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless">
@@ -27,27 +28,33 @@
                 <!-- android:src="@drawable/maxresdefault"-->
 
 
-                <TextView
-                        android:id="@+id/dataItemTitle"
-                        style="@style/TextAppearance.AppCompat.Headline"
+                <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:layout_marginStart="10dp"
+                        android:layout_height="match_parent"
                         android:layout_toEndOf="@id/dataItemImage"
-                        android:layout_alignParentTop="true"
-                        android:textColor="@color/colorTextBlack" />
+                        android:orientation="vertical">
 
-                <TextView
-                        android:id="@+id/dataItemResult"
-                        style="@style/TextAppearance.AppCompat.Subhead"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_below="@id/dataItemTitle"
-                        android:layout_toEndOf="@id/dataItemImage"
-                        android:layout_alignParentBottom="true"
-                        android:padding="8dp"/>
+                        <TextView
+                                android:id="@+id/dataItemTitle"
+                                android:textSize="18sp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="8dp"
+                                android:gravity="center_vertical"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="5dp"
+                                android:textColor="@color/colorTextBlack" />
+
+                        <TextView
+                                android:id="@+id/dataItemResult"
+                                android:textSize="16sp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:gravity="center_vertical"
+                                android:padding="8dp"/>
+
+                </LinearLayout>
 
         </RelativeLayout>
       <!--  <TextView
