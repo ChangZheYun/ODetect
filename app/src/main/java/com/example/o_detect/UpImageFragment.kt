@@ -40,6 +40,7 @@ import com.google.firebase.storage.UploadTask
 import com.google.firebase.storage.internal.Sleeper
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.content_display.*
+import kotlinx.android.synthetic.main.farm_overview.*
 import kotlinx.android.synthetic.main.home.*
 import kotlinx.android.synthetic.main.title_uploadimage.*
 import kotlinx.android.synthetic.main.title_uploadimage.view.*
@@ -59,10 +60,6 @@ import java.text.DateFormat
 import java.text.DateFormat.getDateInstance
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.concurrent.thread
-import kotlin.concurrent.timer
-import kotlin.concurrent.timerTask
-import kotlin.system.exitProcess
 
 class UpImageFragment : Fragment() {
 
@@ -123,31 +120,23 @@ class UpImageFragment : Fragment() {
         var path = "MetaData/$userId/houseNum"
         val databaseRef = FirebaseDatabase.getInstance().reference
         val preference = activity!!.getSharedPreferences("houseData",Context.MODE_PRIVATE)
-        val houseNum = preference.getInt("houseNum",0)
-        if(houseNum == 0) {
-            databaseRef.child(path).addListenerForSingleValueEvent(object : ValueEventListener {
 
-                override fun onCancelled(p0: DatabaseError) {}
+        databaseRef.child(path).addListenerForSingleValueEvent(object : ValueEventListener {
 
-                override fun onDataChange(p0: DataSnapshot) {
-                    //將溫室資料存在local(使用apply效能較好)
-                    preference.edit().putInt("houseNum", p0.value.toString().toInt()).apply()
-                    if (p0.value.toString().toInt() >= 2) {
-                        for (i in 2..p0.value.toString().toInt()) {
-                            spinnerList.add("溫室$i")
-                        }
+            override fun onCancelled(p0: DatabaseError) {}
+
+            override fun onDataChange(p0: DataSnapshot) {
+                //將溫室資料存在local(使用apply效能較好)
+                preference.edit().putInt("houseNum", p0.value.toString().toInt()).apply()
+                if (p0.value.toString().toInt() >= 2) {
+                    for (i in 2..p0.value.toString().toInt()) {
+                        spinnerList.add("溫室$i")
                     }
+                }
 
-                    Log.i("溫室數量", p0.value.toString())
-                }
-            })
-        }else{
-            if (houseNum >= 2) {
-                for (i in 2..houseNum) {
-                    spinnerList.add("溫室$i")
-                }
+                Log.i("溫室數量", p0.value.toString())
             }
-        }
+        })
 
         val spinnerAdapter = ArrayAdapter(activity!!,R.layout.greenhouse_list,spinnerList)
         spinnerAdapter.setDropDownViewResource(R.layout.greenhouse_list)
@@ -170,6 +159,10 @@ class UpImageFragment : Fragment() {
                     hintText.text = resources.getString(R.string.hint5)
                     hintText.visibility = View.INVISIBLE
                     progressBar.visibility = View.INVISIBLE
+
+                    //清除名稱
+                    plantNameText.setText("")
+
                     //載入圖片
                     path = "Record/$userId/G$greenhouseID/$date/$key"
                     databaseRef.child("$path/detectURL").addListenerForSingleValueEvent(object : ValueEventListener {
@@ -182,6 +175,7 @@ class UpImageFragment : Fragment() {
                                 .load(p0.value.toString())
                                 .placeholder(R.drawable.photo_black_24dp)
                                 .error(R.drawable.photo_black_24dp)
+                                .fit()
                                 .into(imageView)
                         }
                     })
@@ -210,6 +204,7 @@ class UpImageFragment : Fragment() {
                             }
                         }
                     })
+
                 }
             }
         }
@@ -447,9 +442,6 @@ class UpImageFragment : Fragment() {
                                 imageHouse.text = String.format(resources.getString(R.string.result_house),greenhouseID)
                                 imagePlantName.text = String.format(resources.getString(R.string.result_plant_name),plantName.text.toString())
                                 imageDate.text = String.format(resources.getString(R.string.result_date),timestamp)
-
-                                //清除名稱
-                                plantNameText.setText("")
 
                                 //傳送socket
                                 Log.i("傳送socket測試","測試測試")

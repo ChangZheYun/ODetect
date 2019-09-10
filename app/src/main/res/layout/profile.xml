@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/fragmentProfile"
         android:layout_width="match_parent"
@@ -167,7 +167,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <com.google.android.material.card.MaterialCardView
+   <!-- <com.google.android.material.card.MaterialCardView
             android:id="@+id/profileCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -177,17 +177,16 @@
             app:layout_constraintTop_toBottomOf="@id/profileBlock"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
-    </com.google.android.material.card.MaterialCardView>
+    </com.google.android.material.card.MaterialCardView>-->
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addGreenhouseButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
+            android:layout_gravity="bottom|end"
             app:maxImageSize="32dp"
-            style="@style/loginButton"
-            app:layout_constraintBottom_toBottomOf="@id/fragmentProfile"
-            app:layout_constraintEnd_toEndOf="@id/fragmentProfile"/>
+            style="@style/loginButton"/>
 
    <!-- <com.google.android.material.button.MaterialButton
             android:id="@+id/signOutButton"
@@ -206,4 +205,4 @@
             app:layout_constraintEnd_toEndOf="parent"/>-->
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -5,14 +5,55 @@
         android:id="@+id/farmLineChartLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/background">
 
     <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp">
+
+
+            <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/farmPieCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                    style="@style/mediumCardView">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:orientation="horizontal">
+
+                    <com.github.mikephil.charting.charts.PieChart
+                            android:id="@+id/farmPieChart"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="3"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:minWidth="150dp"/>
+                    <TextView
+                            android:id="@+id/farmPieText"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="4"
+                            android:textSize="20sp"
+                            android:gravity="center_vertical|center_horizontal"
+                            android:layout_marginEnd="5dp"
+                            android:text="植物狀況極好!"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
             <com.github.mikephil.charting.charts.CombinedChart
                     android:id="@+id/farmCombineChart"
                     android:layout_width="match_parent"
@@ -22,6 +63,7 @@
                     android:layout_marginEnd="5dp"
                     android:layout_marginTop="20dp"/>
         </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

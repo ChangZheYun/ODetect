@@ -78,7 +78,8 @@ class DataListFragment :Fragment(){
                 Picasso.with(context)
                        .load(data[position]!!.imageURL)
                        .placeholder(R.drawable.photo_black_24dp)
-                       .error(R.drawable.photo_black_24dp)
+                       .error(R.drawable.photo)
+                       .fit()
                        .into(holder.image)
             }
             //ImageAsyncTask().execute(AsyncModel(holder.image,data[position]?.imageURL.toString()) )
@@ -111,9 +112,9 @@ class DataListFragment :Fragment(){
     )
 
     //AsyncTask傳遞所需參數
-    //class AsyncModel(var image: ImageView, var URL: String)
+    /*class AsyncModel(var image: ImageView, var URL: String)
 
-    /*class ImageAsyncTask : AsyncTask<AsyncModel, Int, Bitmap>() {
+    class ImageAsyncTask : AsyncTask<AsyncModel, Int, Bitmap>() {
 
         var image : ImageView? = null
 

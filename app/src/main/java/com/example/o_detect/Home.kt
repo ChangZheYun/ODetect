@@ -47,6 +47,7 @@ class Home : Fragment(){
                 else -> "個別管理"
             }
         }
+
     }
 
     private fun setViewPagerAndTabLayout(){
