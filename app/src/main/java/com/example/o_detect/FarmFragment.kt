@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.internal.Sleeper
 import kotlinx.android.synthetic.main.farm_overview.*
 import java.lang.Exception
 
@@ -118,51 +119,73 @@ class FarmFragment:Fragment() {
         val databaseRef = FirebaseDatabase.getInstance().reference
         val statistic : MutableList<houseData> = mutableListOf()
 
-        databaseRef.child(path).addListenerForSingleValueEvent( object: ValueEventListener {
 
+        databaseRef.child(path).addValueEventListener(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {}
-
             override fun onDataChange(p0: DataSnapshot) {
 
-                statistic.clear()
-                pHealthSum = 0.0
-                pUnHealthSum = 0.0
+                context?.let {
+                    val newHouseNum = it.getSharedPreferences("houseData", Context.MODE_PRIVATE).getInt("houseNum", 1)
+                    if (houseNum != newHouseNum) {
+                        houseNum = newHouseNum
 
-                p0.children.forEach{ it ->
-                    //Log.i("data-key",it.key.toString())
-                    if(it.key.toString()[0]=='G') {
-                        val info = houseData(0F,0F,0F)
-                        it.children.forEach {
-                            when (it.key) {
-                                "health" ->{
-                                    info.health = it.value.toString().toFloat()
-                                    pHealthSum += info.health
-                                }
-                                "unhealth" ->{
-                                    info.unhealth = it.value.toString().toFloat()
-                                    pUnHealthSum += info.unhealth
-                                }
-                                "housePlantSum" ->{
-                                    info.housePlantSum = it.value.toString().toFloat()
-                                }
-                            }
-                        }
-                        statistic.add(info)
-                    }else if(it.key.toString()=="houseNum"){
-                        houseNum = it.value.toString().toInt()
+                        databaseRef.child("$path/G$houseNum/health").setValue(0)
+                        databaseRef.child("$path/G$houseNum/unhealth").setValue(0)
+                        databaseRef.child("$path/G$houseNum/housePlantSum").setValue(0)
                     }
                 }
-                Log.i("健康數量:",pHealthSum.toString())
-                Log.i("不健康數量",pUnHealthSum.toString())
-                Log.i("溫室數量:",houseNum.toString())
 
-                /*if(statistic.size < houseNum){
-                    statistic.add(houseData(0f,0f,0f))
-                }*/
-                Log.i("統計表數量:",statistic.size.toString())
+                //寫入新資料要重讀一次
+                databaseRef.child(path).addListenerForSingleValueEvent( object: ValueEventListener {
 
-                showCombineChart(statistic)
-                showPieChart()
+                    override fun onCancelled(p0: DatabaseError) {}
+
+                    override fun onDataChange(p1: DataSnapshot) {
+
+                        statistic.clear()
+                        pHealthSum = 0.0
+                        pUnHealthSum = 0.0
+
+
+                        p1.children.forEach { it ->
+                            //Log.i("data-key",it.key.toString())
+
+                            Log.i("-----------4-----------", it.value.toString())
+                            if (it.key.toString()[0] == 'G') {
+                                val info = houseData(0F, 0F, 0F)
+                                it.children.forEach {
+                                    when (it.key) {
+                                        "health" -> {
+                                            info.health = it.value.toString().toFloat()
+                                            pHealthSum += info.health
+                                        }
+                                        "unhealth" -> {
+                                            info.unhealth = it.value.toString().toFloat()
+                                            pUnHealthSum += info.unhealth
+                                        }
+                                        "housePlantSum" -> {
+                                            info.housePlantSum = it.value.toString().toFloat()
+                                        }
+                                    }
+                                }
+                                statistic.add(info)
+                            }
+                        }
+
+                       Log.i("健康數量:",pHealthSum.toString())
+                       Log.i("不健康數量",pUnHealthSum.toString())
+                       Log.i("溫室數量:",houseNum.toString())
+
+                       /*if(statistic.size < houseNum){
+                           statistic.add(houseData(0f,0f,0f))
+                       }*/
+                       Log.i("統計表數量:",statistic.size.toString())
+
+                       showCombineChart(statistic)
+                       showPieChart()
+
+                    }
+                })
             }
         })
     }
@@ -175,8 +198,8 @@ class FarmFragment:Fragment() {
         dataSet.isHighlightEnabled = false
         //dataSet.highLightColor = ContextCompat.getColor(activity!!,R.color.colorButtonNormal)
         //點選資料橫豎顏色
-        dataSet.color = color
-        dataSet.valueTextColor = ContextCompat.getColor(activity!!,R.color.colorHint)
+        context?.let { dataSet.color = ContextCompat.getColor(it,color) }
+        context?.let { dataSet.valueTextColor = ContextCompat.getColor(it,R.color.colorHint) }
         //顯示值
         dataSet.valueTextSize = 12f
         dataSet.setDrawValues(true)
@@ -197,7 +220,7 @@ class FarmFragment:Fragment() {
         //Bar資料
         val dataSet = BarDataSet(statistic,"數量")
         dataSet.valueTextSize = 12f
-        dataSet.color = ContextCompat.getColor(activity!!, R.color.colorBar)
+        context?.let { dataSet.color = ContextCompat.getColor(it,R.color.colorBar) }
         dataSet.axisDependency = YAxis.AxisDependency.LEFT
         dataSet.setDrawValues(false)
 
@@ -219,15 +242,16 @@ class FarmFragment:Fragment() {
         pieStaticSum .add(PieEntry(pUnHealthSum.toFloat(),"不健康"))
 
         val color : MutableList<Int> = mutableListOf()
-        color.add(ContextCompat.getColor(activity!!,R.color.health))
-        color.add(ContextCompat.getColor(activity!!,R.color.unhealth))
+        context?.let { color.add(ContextCompat.getColor(it,R.color.health)) }
+        context?.let { color.add(ContextCompat.getColor(it,R.color.unhealth)) }
 
         val dataSet = PieDataSet(pieStaticSum,"溫室狀況")
         dataSet.colors = color
 
         val pieData = PieData(dataSet)
         pieData.setDrawValues(true)
-        pieData.setValueTextColor(ContextCompat.getColor(activity!!,R.color.colorText))
+
+        context?.let { pieData.setValueTextColor(ContextCompat.getColor(it,R.color.colorText)) }
         pieData.setValueTextSize(14f)
         pieData.setValueFormatter(PercentFormatter())
 
@@ -245,6 +269,8 @@ class FarmFragment:Fragment() {
     }
 
     private fun showCombineChart(statistic:MutableList<houseData>){
+
+        Log.i("顯示資訊，統計圖數量",statistic.size.toString())
 
         val allData = CombinedData()
         //Log.i("size",statistic.size.toString())
@@ -274,14 +300,14 @@ class FarmFragment:Fragment() {
         for(i in 0 until statistic.size){
             health.add(Entry(i.toFloat(),statistic[i].health))
         }
-        val healthDataSet = getLineData(health,ContextCompat.getColor(activity!!,R.color.health),"健康")
+        val healthDataSet = getLineData(health,R.color.health,"健康")
 
         //綁定折線圖(不健康)
         val unHealth : MutableList<Entry> = mutableListOf()
         for(i in 0 until statistic.size){
             unHealth.add(Entry(i.toFloat(),statistic[i].unhealth))
         }
-        val unHealthDataSet = getLineData(unHealth,ContextCompat.getColor(activity!!,R.color.unhealth),"不健康")
+        val unHealthDataSet = getLineData(unHealth,R.color.unhealth,"不健康")
         allData.setData(LineData(healthDataSet,unHealthDataSet))
 
 
@@ -289,6 +315,7 @@ class FarmFragment:Fragment() {
         combineChart.animateX(2500)
         combineChart.invalidate()
     }
+
 
 
     /*測試用程式

@@ -74,6 +74,9 @@ class Profile:Fragment() {
             profileEmail.text = email
         }
 
+        //HouseNum顯示
+        profileHouseNum.text = activity!!.getSharedPreferences("houseData", Context.MODE_PRIVATE).getInt("houseNum",1).toString()
+
         updateUsernameButton.setOnClickListener {
             val dialog = AlertDialog.Builder(activity,R.style.dialogSoftKeyboardVisible)
             val inflater = activity!!.layoutInflater
@@ -150,12 +153,11 @@ class Profile:Fragment() {
             Log.i("經過這","profile")
             path = "MetaData/$userId"
             databaseRef.child("$path/houseNum").setValue(houseNum)
-            databaseRef.child("$path/G$houseNum/health").setValue(0)
+            /*databaseRef.child("$path/G$houseNum/health").setValue(0)
             databaseRef.child("$path/G$houseNum/unhealth").setValue(0)
-            databaseRef.child("$path/G$houseNum/housePlantSum").setValue(0)
+            databaseRef.child("$path/G$houseNum/housePlantSum").setValue(0)*/
             Snackbar.make(view!!, "溫室數量: $houseNum", Snackbar.LENGTH_SHORT).show()
 
-            Log.i("更新溫室:",preference.getInt("houseNum",1).toString())
         }
     }
 }

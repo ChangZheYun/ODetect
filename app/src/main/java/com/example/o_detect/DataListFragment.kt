@@ -266,15 +266,15 @@ class DataListFragment :Fragment(){
         val path = "Record/$userId/G$greenhouseID/$date"
         val dataSearch = databaseRef.reference
 
-        val init = DataModel("","","","","")
-        dataArray = arrayListOf(init)
-        dataArray.removeAt(0)
-
         dataSearch.child(path).addListenerForSingleValueEvent( object: ValueEventListener {
 
             override fun onCancelled(p0: DatabaseError) {}
 
             override fun onDataChange(p0: DataSnapshot) {
+
+                val init = DataModel("","","","","")
+                dataArray = arrayListOf(init)
+                dataArray.removeAt(0)
 
                 dataCount = 0
                 //有資料時隱藏warning
@@ -380,14 +380,127 @@ class DataListFragment :Fragment(){
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val position = viewHolder.adapterPosition
-            databaseRef.reference.child( "Record/$userId/G$greenhouseID/$date/${dataArray[position]!!.rid}").removeValue()
-            databaseRef.reference.child( "Plant/$userId/G$greenhouseID/${dataArray[position]!!.plantName}/${dataArray[position]!!.timestamp}").removeValue()
-            storageRef.reference.child("$userId/G$greenhouseID/$date/originImage/${dataArray[position]!!.rid}.jpg").delete()
-            //結果圖還沒刪除
-            //刪除選中item
-            dataArray.removeAt(position)
-            recycleradpater.notifyItemRemoved(position)
-            recycleradpater.notifyItemRangeChanged(position,dataArray.size)
+            val path = "$userId/G$greenhouseID"
+
+            //先刪除Plant的foreignKey
+            databaseRef.reference.child( "Plant/$path/${dataArray[position]!!.plantName}/${dataArray[position]!!.timestamp}").removeValue()
+
+            //更新MetaData的值
+            //先判斷這個植物有沒有上一筆
+            var lastRecordDay = ""
+            var lastRecordKey = ""
+            var deleteResult = ""
+            databaseRef.reference.child( "Plant/$path/${dataArray[position]!!.plantName}")
+                .limitToLast(1).addListenerForSingleValueEvent(object :ValueEventListener{
+                    override fun onCancelled(p0: DatabaseError) {}
+                    override fun onDataChange(p0: DataSnapshot) {
+                        if(p0.childrenCount.toInt() == 0){
+                            lastRecordKey = "-1"
+                        }else {
+                            p0.children.forEach {
+                                lastRecordDay = it.key.toString().split("-")[0]
+                                lastRecordKey = it.value.toString()
+                            }
+                        }
+                        Log.i("lastRecordKey=========",lastRecordKey)
+                        Log.i("lastRecordDay=========",lastRecordDay)
+
+                        Log.i("last-rid====",dataArray[position]!!.rid)
+                        databaseRef.reference.child( "Record/$path/$date/${dataArray[position]!!.rid}/result")
+                            .addListenerForSingleValueEvent(object :ValueEventListener{
+                                override fun onCancelled(p0: DatabaseError) {}
+                                override fun onDataChange(p0: DataSnapshot) {
+                                    deleteResult = p0.value.toString()
+
+                                    //讀取該溫室健康與不健康的數量
+                                    var thisHouseHealth = 0
+                                    var thisHouseUnHealth = 0
+                                    var thisHousePlantSum = 0
+                                    databaseRef.reference.child("MetaData/$path").addListenerForSingleValueEvent(object :ValueEventListener{
+                                        override fun onCancelled(p0: DatabaseError) {}
+                                        override fun onDataChange(p0: DataSnapshot) {
+                                            p0.children.forEach{
+                                                when(it.key.toString()){
+                                                    "health" -> {
+                                                        thisHouseHealth = it.value.toString().toInt()
+                                                    }
+                                                    "unhealth" -> {
+                                                        thisHouseUnHealth = it.value.toString().toInt()
+                                                    }
+                                                    "housePlantSum" ->{
+                                                        thisHousePlantSum = it.value.toString().toInt()
+                                                    }
+                                                }
+                                            }
+
+                                            Log.i("thisHouseHealth===",thisHouseHealth.toString())
+                                            Log.i("thisHouseUnHealth===",thisHouseUnHealth.toString())
+                                            Log.i("thisHousePlantSum===",thisHousePlantSum.toString())
+
+                                            Log.i("result===",deleteResult)
+
+                                            //先減1
+                                            val metaPath = "MetaData/$path/$deleteResult"
+                                            Log.i("result===",deleteResult)
+                                            when(deleteResult){
+                                                "health" -> {
+                                                    thisHouseHealth -= 1
+                                                    databaseRef.reference.child(metaPath).setValue(thisHouseHealth.toString())
+                                                }
+                                                "unhealth" -> {
+                                                    thisHouseUnHealth -= 1
+                                                    databaseRef.reference.child(metaPath).setValue(thisHouseUnHealth.toString())
+                                                }
+                                            }
+
+                                            if(lastRecordKey == "-1"){
+                                                thisHousePlantSum -= 1
+                                                databaseRef.reference.child("MetaData/$path/housePlantSum").setValue(thisHousePlantSum.toString())
+                                            }else{
+                                                //之前有紀錄的加回來
+                                                Log.i("HAHA===",deleteResult)
+                                                var lastResult = ""
+                                                databaseRef.reference.child( "Record/$path/$lastRecordDay/$lastRecordKey/result")
+                                                    .addListenerForSingleValueEvent(object :ValueEventListener{
+                                                        override fun onCancelled(p0: DatabaseError) {}
+                                                        override fun onDataChange(p0: DataSnapshot) {
+                                                            lastResult = p0.value.toString()
+                                                            val metaPath = "MetaData/$path/$lastResult"
+                                                            when(lastResult){
+                                                                "health" -> {
+                                                                    thisHouseHealth += 1
+                                                                    databaseRef.reference.child(metaPath).setValue(thisHouseHealth.toString())
+                                                                }
+                                                                "unhealth" -> {
+                                                                    thisHouseUnHealth += 1
+                                                                    databaseRef.reference.child(metaPath).setValue(thisHouseUnHealth.toString())
+                                                                }
+                                                            }
+                                                        }
+                                                    })
+                                            }
+
+                                            //刪除資料庫中該病歷的資料
+                                            databaseRef.reference.child( "Record/$path/$date/${dataArray[position]!!.rid}").removeValue()
+
+                                            //databaseRef.reference.child("MetaData/$userId/G$greenhouseID/${dataArray[position]!!.result}")
+                                            storageRef.reference.child("$userId/G$greenhouseID/$date/originImage/${dataArray[position]!!.rid}.jpg").delete()
+                                            //結果圖還沒刪除
+                                            //刪除選中item
+                                            dataArray.removeAt(position)
+                                            recycleradpater.notifyItemRemoved(position)
+                                            recycleradpater.notifyItemRangeChanged(position,dataArray.size)
+
+                                        }
+                                    })
+                                }
+                            })
+
+                    }
+                })
+
+
+
         }
     }
   /*  class SpinnerBehavior : CoordinatorLayout.Behavior<androidx.appcompat.widget.AppCompatSpinner>{
