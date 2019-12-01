@@ -35,8 +35,9 @@ class Profile:Fragment() {
 
         val auth = FirebaseAuth.getInstance()
         val userId = auth.currentUser!!.uid
-        var path = "User/$userId"
+        var path : String
         val databaseRef = FirebaseDatabase.getInstance().reference
+        var houseNum = 0
 
         //Username顯示
         val username = activity!!.getSharedPreferences("userData", Context.MODE_PRIVATE).getString("username","")
@@ -75,7 +76,21 @@ class Profile:Fragment() {
         }
 
         //HouseNum顯示
-        profileHouseNum.text = activity!!.getSharedPreferences("houseData", Context.MODE_PRIVATE).getInt("houseNum",1).toString()
+        //profileHouseNum.text = activity!!.getSharedPreferences("houseData", Context.MODE_PRIVATE).getInt("houseNum",1).toString()
+        path = "MetaData/$userId/houseNum"
+        databaseRef.child(path).addValueEventListener(object : ValueEventListener {
+
+            override fun onCancelled(p0: DatabaseError) {}
+
+            override fun onDataChange(p0: DataSnapshot) {
+                profileHouseNum.text = p0.value.toString()
+                houseNum = p0.value.toString().toInt()
+                activity!!.getSharedPreferences("houseData", Context.MODE_PRIVATE)
+                    .edit().putInt("houseNum",p0.value.toString().toInt()).apply()
+            }
+        })
+
+
 
         updateUsernameButton.setOnClickListener {
             val dialog = AlertDialog.Builder(activity,R.style.dialogSoftKeyboardVisible)
@@ -141,13 +156,13 @@ class Profile:Fragment() {
             auth.signOut()
             activity!!.getSharedPreferences("houseData", Context.MODE_PRIVATE).edit().clear().apply()
             activity!!.getSharedPreferences("userData", Context.MODE_PRIVATE).edit().clear().apply()
-            startActivity(Intent(activity, MainActivity::class.java))
+            startActivity(Intent(activity, LoginActivity::class.java))
         }
 
         addGreenhouseButton.setOnClickListener{
             val preference = activity!!.getSharedPreferences("houseData", Context.MODE_PRIVATE)
-            var houseNum = preference.getInt("houseNum",1)
-            houseNum+=1
+            //var mhouseNum = preference.getInt("houseNum",1)
+            houseNum += 1
             preference.edit().putInt("houseNum",houseNum).apply()
 
             Log.i("經過這","profile")

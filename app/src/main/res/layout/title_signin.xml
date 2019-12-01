@@ -145,21 +145,47 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="70dp"/>-->
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/signInButton"
-        android:enabled="true"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="@string/action_sign_in"
-        android:layout_marginBottom="5dp"
-        app:cornerRadius="200dp"
-        android:textSize="16sp"
-        android:padding="10dp"
-        android:gravity="center"
-        style="@style/loginButton"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="horizontal"
+            android:layout_marginBottom="5dp"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/fingerSignInButton"
+                android:enabled="true"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/action_finger_sign_in"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="5dp"
+                app:cornerRadius="200dp"
+                android:textSize="16sp"
+                android:padding="10dp"
+                android:gravity="center"
+                style="@style/loginButton"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/signInButton"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/signInButton"
+            android:enabled="true"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/action_sign_in"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="10dp"
+            app:cornerRadius="200dp"
+            android:textSize="16sp"
+            android:padding="10dp"
+            android:gravity="center"
+            style="@style/loginButton"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/fingerSignInButton"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

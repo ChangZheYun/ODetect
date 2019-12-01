@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:dist="http://schemas.android.com/apk/distribution"
-          package="com.example.o_detect">
+        xmlns:dist="http://schemas.android.com/apk/distribution"
+        xmlns:tools="http://schemas.android.com/tools"
+        package="com.example.o_detect">
 
     <dist:module dist:instant="true"/>
 
@@ -9,6 +10,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <!--修正閃退-->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    <!--指紋辨識-->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
 
     <supports-screens
             android:smallScreens="true"
@@ -23,7 +29,15 @@
             android:label="@string/app_name"
             android:roundIcon="@mipmap/logo_round"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:usesCleartextTraffic="true"
+            android:largeHeap="true">
+
+        <!--android9閃退-->
+        <uses-library
+                android:name="org.apache.http.legacy"
+                android:required="false" />
+
         <meta-data
                 android:name="com.google.android.actions"
                 android:resource="@xml/provider_paths"/>
@@ -54,5 +68,6 @@
                     android:resource="@xml/provider_paths"/>
         </provider>
     </application>
+
 
 </manifest>

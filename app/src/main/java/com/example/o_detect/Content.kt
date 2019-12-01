@@ -8,6 +8,7 @@ import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.widget.Toast
@@ -116,7 +117,7 @@ open class Content : AppCompatActivity(){
         //動畫的結束半徑
         val endRadius = kotlin.math.max(width,height).toFloat()
 
-        val circularReveal = ViewAnimationUtils.createCircularReveal(contentDisplay, centerX, centerY, startRadius, endRadius)
+        val circularReveal = ViewAnimationUtils.createCircularReveal(contentDisplay, width-100, height-200, startRadius, endRadius)
         circularReveal.duration = 800
         circularReveal.interpolator = AccelerateInterpolator()
 

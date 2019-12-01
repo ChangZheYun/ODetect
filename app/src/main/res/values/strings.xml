@@ -6,7 +6,8 @@
     <string name="prompt_username">Username</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">登入</string>
+    <string name="action_finger_sign_in">指紋登入</string>
+    <string name="action_sign_in">密碼登入</string>
     <string name="action_sign_up">註冊</string>
     <string name="action_sign_out">登出</string>
     <string name="action_update_password">更換密碼</string>
@@ -44,5 +45,11 @@
     <string name="result_house">溫室: %1$d</string>
     <string name="result_plant_name">名稱: %1$s</string>
     <string name="result_date">時間: %1$s</string>
+
+    <!--農場概況-->
+    <string name="farm_perfect">植物狀況極佳</string>
+    <string name="farm_good">植物狀況良好</string>
+    <string name="farm_bad">植物狀況不佳</string>
+    <string name="farm_no_plant">快新增第一筆吧</string>
 
 </resources>

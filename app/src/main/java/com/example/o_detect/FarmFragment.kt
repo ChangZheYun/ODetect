@@ -184,6 +184,28 @@ class FarmFragment:Fragment() {
                        showCombineChart(statistic)
                        showPieChart()
 
+                        val pSum = pHealthSum + pUnHealthSum
+
+                        try {
+                            if (pSum == 0.0) {
+                                farmPieText.setText(context!!.resources.getString(R.string.farm_no_plant))
+                            } else {
+                                when (pHealthSum / pSum) {
+                                    in 0.9..1.0 -> {
+                                        farmPieText.setText(context!!.resources.getString(R.string.farm_perfect))
+                                    }
+                                    in 0.7..0.9 -> {
+                                        farmPieText.setText(context!!.resources.getString(R.string.farm_good))
+                                    }
+                                    else -> {
+                                        farmPieText.setText(context!!.resources.getString(R.string.farm_bad))
+                                    }
+                                }
+                            }
+                        }catch(e:Exception){
+
+                        }
+
                     }
                 })
             }
@@ -255,6 +277,26 @@ class FarmFragment:Fragment() {
         pieData.setValueTextSize(14f)
         pieData.setValueFormatter(PercentFormatter())
 
+        //設定圓餅圖旁的提醒文字
+        /*val pSum = pHealthSum + pUnHealthSum
+
+        if(pSum == 0.0){
+            Log.i("TESTTT","WHAT")
+            farmPieText.text = context!!.resources.getString(R.string.farm_no_plant)
+        }else {
+            when (pHealthSum / pSum) {
+                in 0.9..1.0 -> {
+                    farmPieText.text = context!!.resources.getString(R.string.farm_perfect)
+                }
+                in 0.7..0.9 -> {
+                    farmPieText.text = context!!.resources.getString(R.string.farm_good)
+                }
+                else -> {
+                    farmPieText.text = context!!.resources.getString(R.string.farm_bad)
+                }
+            }
+        }
+*/
 
         /*dataSet.yValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE
         pieData.setValueTextColor(ContextCompat.getColor(activity!!,R.color.colorHint))

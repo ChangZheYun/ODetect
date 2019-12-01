@@ -1,22 +1,25 @@
 package com.example.o_detect
 
+import android.R.attr.data
 import android.content.Context
-import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
-import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.Button
+import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.*
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.android.synthetic.main.activity_login.*
+import java.io.File
+import java.io.FileOutputStream
 
 
 class SignUpFragment:Fragment() {
@@ -113,6 +116,12 @@ class SignUpFragment:Fragment() {
                             //成功註冊
                             Log.d(TAG, "createUserWithEmail:success")
 
+                            //將信箱密碼寫入記憶體
+                            val dir = context!!.filesDir
+                            val outputFile = File(dir,"account.txt")
+                            val accountData = "${upEmail.text}###${upPassword.text}"
+                            writeToFile(outputFile,accountData)
+
                             //發送驗證信
                             val user = auth.currentUser
                             user?.sendEmailVerification()
@@ -174,6 +183,22 @@ class SignUpFragment:Fragment() {
                             }).show()
                         }
                     }
+            }
+        }
+    }
+
+    private fun writeToFile(outputFile : File , data : String){
+        var osw: FileOutputStream? = null
+        try {
+            osw = FileOutputStream(outputFile)
+            osw.write(data.toByteArray())
+            Log.d("TTest",data)
+            osw.flush()
+        } catch (e: Exception) {
+        } finally {
+            try {
+                osw?.close()
+            } catch (e: Exception) {
             }
         }
     }

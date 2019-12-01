@@ -35,6 +35,7 @@ import com.example.o_detect.SignInFragment
 import com.example.o_detect.SignUpFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlinx.android.synthetic.main.title_signin.view.*
@@ -115,8 +116,8 @@ class LoginActivity : AppCompatActivity() {
 
        // val img = findViewById<View>(R.id.headerLayout)
 
-        viewPager = findViewById(R.id.signPager)
-        tabLayout = findViewById(R.id.signTabs)
+        viewPager = signPager
+        tabLayout = signTabs
 
         //val titleGridView=findViewById<GridView>(R.id.titleGridView)
 
