@@ -502,14 +502,22 @@ class UpImageFragment : Fragment() {
                 val client = ClientSocket(host, port.toInt())
                 client.update(data)
             }catch (e: InterruptedException){
-                Log.i("Socket斷線","已斷線")
+                Log.i("Socket斷線","已斷線1")
                 PacketAsyncTask().cancel(true)
             }catch (e: Exception) {
                 e.printStackTrace()
+                Log.i("Socket斷線","已斷線2")
+                PacketAsyncTask().cancel(true)
             }
 
             return 0
         }
+
+        /*override fun onCancelled() {
+            hintText.text = resources.getString(R.string.hint6)
+            uploadImageProgress.hide()
+            super.onCancelled()
+        }*/
 
         //客戶端
         inner class  ClientSocket (host: String, port: Int ) :Socket(host,port){
@@ -564,9 +572,9 @@ class UpImageFragment : Fragment() {
                     val line = reader.read().toChar()
                     //向控制台寫入
                     //print(line)
-                    if(line == '1') {
+                    if (line == '1') {
                         packetStatus = 1
-                    }else if(line == '2'){
+                    } else if (line == '2') {
                         packetStatus = 2
                         break
                     }

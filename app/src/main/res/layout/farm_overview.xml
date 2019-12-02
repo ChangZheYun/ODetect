@@ -44,7 +44,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="4"
-                            android:textSize="20sp"
+                            android:textSize="16sp"
                             android:gravity="center_vertical|center_horizontal"
                             android:layout_marginEnd="5dp"
                             android:text="@string/farm_no_plant"/>

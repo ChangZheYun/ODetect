@@ -51,7 +51,7 @@
                 app:layout_constraintTop_toBottomOf="@id/profileUsername"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
-                android:textSize="18sp"/>
+                android:textSize="16sp"/>
 
         <TextView
                 android:id="@+id/profileEmail"
@@ -61,7 +61,7 @@
                 app:layout_constraintTop_toBottomOf="@id/profileUsername"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
-                android:textSize="18sp"/>
+                android:textSize="16sp"/>
 
         <TextView
                 android:id="@+id/profileHouseNumHint"
@@ -72,7 +72,7 @@
                 app:layout_constraintTop_toBottomOf="@id/profileEmail"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
-                android:textSize="18sp"/>
+                android:textSize="16sp"/>
 
         <TextView
                 android:id="@+id/profileHouseNum"
@@ -82,7 +82,7 @@
                 app:layout_constraintTop_toBottomOf="@id/profileEmail"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
-                android:textSize="18sp"/>
+                android:textSize="16sp"/>
 
 
         <LinearLayout
@@ -98,7 +98,7 @@
                     android:layout_height="wrap_content"
                     style="@style/loginButton"
                     android:text="@string/action_update_username"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:padding="10dp"
                     android:gravity="center"
                     android:enabled="true"
@@ -111,7 +111,7 @@
                         android:layout_height="wrap_content"
                         style="@style/loginButton"
                         android:text="@string/action_update_password"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:padding="10dp"
                         android:gravity="center"
                         android:enabled="true"
@@ -125,7 +125,7 @@
                         android:layout_height="wrap_content"
                         style="@style/loginButton"
                         android:text="@string/action_sign_out"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:padding="10dp"
                         android:gravity="center"
                         android:enabled="true"

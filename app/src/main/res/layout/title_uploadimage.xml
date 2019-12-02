@@ -45,6 +45,7 @@
                         app:layout_constraintStart_toStartOf="@+id/uploadImageBlock"
                         app:layout_constraintEnd_toEndOf="@+id/uploadImageBlock"
                         android:layout_marginBottom="10dp"
+                        android:textSize="13sp"
                         android:visibility="invisible"/>
 
                 <androidx.core.widget.ContentLoadingProgressBar
@@ -57,7 +58,8 @@
                         app:layout_constraintBottom_toBottomOf="@+id/greenHouseList"
                         app:layout_constraintStart_toStartOf="@+id/uploadImageBlock"
                         app:layout_constraintEnd_toEndOf="@+id/uploadImageBlock"
-                        android:layout_marginBottom="55dp"
+                        android:layout_marginBottom="50dp"
+                        android:textSize="13sp"
                         android:visibility="invisible"/>
                         <!--
                         android:progress="0"
@@ -89,7 +91,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:spinnerMode="dropdown"
-                        app:layout_constraintHorizontal_weight="1"
+                        app:layout_constraintHorizontal_weight="1.2"
                         app:layout_constraintTop_toBottomOf="@id/uploadImageButton"
                         app:layout_constraintStart_toStartOf="@id/uploadImageBlock"
                         app:layout_constraintEnd_toStartOf="@id/plantNameTextLayout"
@@ -118,6 +120,7 @@
                             android:imeOptions="actionDone"
                             android:inputType="text"
                             android:maxLength="10"
+                            android:textSize="14sp"
                             android:selectAllOnFocus="true">
                     </com.google.android.material.textfield.TextInputEditText>
                 </com.google.android.material.textfield.TextInputLayout>

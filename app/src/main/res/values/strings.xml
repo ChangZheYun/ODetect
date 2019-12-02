@@ -37,6 +37,7 @@
     <string name="hint3">發送封包中&#8230;</string>
     <string name="hint4">辨識圖片中&#8230;</string>
     <string name="hint5">辨識完成</string>
+    <string name="hint6">無法連線Server</string>
 
     <!--uploadImage-->
     <string name="prompt_plant_name">輸入蘭花名稱</string>

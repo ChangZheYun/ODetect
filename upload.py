@@ -7,6 +7,8 @@ Created on Thu Aug 22 21:30:29 2019
 
 import pyrebase
 import os
+import random
+import time
 #import firebase_admin
 #from firebase_admin import credentials
 
@@ -24,22 +26,28 @@ def UploadImageToFirebase(url,detectImageName,result):
    
    firebase = pyrebase.initialize_app(config)
    
+   print("\n================Upload=================\n")
+   
    #二進制轉字串
    url = str(url)
+
+   print('url=',url)
+   print('detectImageName=',detectImageName)
+   print('result=',result)
    
    #decode url , get data path and storage path
    uid , house , date , _ , rid = url.split('/')[7].split('%2F',5)
    rid = rid.split('.')[0]
    recordDataPath = os.path.join('Record',uid,house,date,rid).replace('\\','/')
-   #mataDataPath = os.path.join('MataData',uid,house)
+   #metaDataPath = os.path.join('MataData',uid,house)
+   print('[Record Path] ',recordDataPath)
    storagePath = os.path.join(uid,house,date,'detectImage',detectImageName).replace('\\','/')
-   print('[Record DataPath]',recordDataPath)
-   print('[Storage Path]',storagePath)
-   
+   print('[Storage Path] ',storagePath)
    
    #將結果圖存到storage
    storage = firebase.storage()
    storage.child(storagePath).put('detectImage\\'+detectImageName)
+   print('上傳成功')
    detectImagePath ="https://firebasestorage.googleapis.com/v0/b/civic-kayak-240607.appspot.com/o/{0}%2F{1}%2F{2}%2FdetectImage%2F{3}?alt=media" \
    .format(uid,house,date,detectImageName)
    print('[Result Image Path]',detectImagePath)
@@ -50,8 +58,8 @@ def UploadImageToFirebase(url,detectImageName,result):
    db.child(recordDataPath).child('result').set(result)
    
    #[測試]印出database節點資料
-   print('[Node Data]',end="")
-   print(db.child(recordDataPath).get().val())
+   #print('[Node Data]',end="")
+   #print(db.child(recordDataPath).get().val())
 
 
 #if __name__ == '__main__':

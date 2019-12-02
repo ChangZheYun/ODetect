@@ -151,12 +151,6 @@ class SignInFragment : Fragment() {
             }
             else{
                 authenticate(1)
-
-                //將信箱密碼寫入記憶體
-                val dir = context!!.filesDir
-                val outputFile = File(dir,"account.txt")
-                val accountData = "${inEmail.text}###${inPassword.text}"
-                writeToFile(outputFile,accountData)
             }
         }
 
@@ -225,6 +219,13 @@ class SignInFragment : Fragment() {
                     Log.d(TAG, "signInWithEmail:Success")
                     activity!!.getSharedPreferences("userData", Context.MODE_PRIVATE)
                         .edit().putString("email",inEmail.text.toString()).apply()
+
+                    //將信箱密碼寫入記憶體
+                    val dir = context!!.filesDir
+                    val outputFile = File(dir,"account.txt")
+                    val accountData = "${inEmail.text}###${password}"
+                    writeToFile(outputFile,accountData)
+
                     getXYAnimation(view!!)
                 }else if(!task.isSuccessful){
                     Log.w(TAG, "signInWithEmail:failure", task.exception)

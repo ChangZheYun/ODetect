@@ -128,8 +128,9 @@
                             app:tabTextColor="@color/colorSignNoSelect"
                             app:tabGravity="fill"
                             app:tabMode="fixed"
-                            app:tabTextAppearance="@style/tabLayoutAppearance"/>
+                            app:tabTextAppearance="@android:style/TextAppearance.Holo.Small"/>
                         <!--    app:tabTextAppearance="@android:style/TextAppearance.Holo.Large"/> Large/Medium/Small-->
+                        <!-- @style/tabLayoutAppearance -->
 
                     <androidx.viewpager.widget.ViewPager
                             android:id="@+id/signPager"

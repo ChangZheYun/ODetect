@@ -8,25 +8,27 @@ Created on Thu Aug 22 22:45:02 2019
 import socket
 import threading
 import time
+import UI
 
 #thread函數
 def job():
    
-   while True:
-      global listener
-      try:
-         # 接受客戶端的資料
-         data = connect.recv(1024)
-         # 傳送資料給客戶端告訴他接收到了
-         connect.sendall(b'1')
-         print(b'the client say:' + data)
-         time.sleep(5)
-         connect.sendall(b'2')
-      except:
-         print(str(clientThread.getName())+" 斷線")
-         connect.close()
-         listener -= 1
-         break
+    while True:
+        global listener
+        try:
+            # 接受客戶端的資料
+            data = connect.recv(1024)
+            # 傳送資料給客戶端告訴他接收到了
+            connect.sendall(b'1')
+            print(b'the client say:' + data)
+            UI.disease_detector(data)
+            print('============Detect Completed============')
+            connect.sendall(b'2')
+        except:
+            print(str(clientThread.getName())+" 斷線")
+            connect.close()
+            listener -= 1
+            break
    
 
 
